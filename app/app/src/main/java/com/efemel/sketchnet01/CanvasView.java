@@ -45,11 +45,12 @@ public class CanvasView extends View {
     private Stroke thisStroke;
     private Paint drawPaint, canvasPaint;
     private int paintColor = Color.BLACK;
-    private Canvas drawCanvas;
+    private Canvas drawCanvas;//android.graphics.Canvas
     private Bitmap canvasBitmap;
     private LinkedList<Stroke> strokes;
     //private CanvasViewConnect export;
     ConnectionHandler connectionHandler;
+    //need to add a bluetooth
 
     private String userID;
     private String canvasID;

@@ -208,7 +208,7 @@ public class ConnectionHandler {
 
                         e.printStackTrace();
                     }
-                    try{
+                    try{//extracting info from server
                         String CanvasID = object.getString("CanvasID");
                         String CanvasName = object.getString("CanvasName");
                         String Owner = object.getString("Owner");

@@ -40,43 +40,45 @@ public class MainActivity extends AppCompatActivity {
     private String userID;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) { //creates instance MainActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.e("inside: ", "main activity");
-        initialize();
+        initialize();                                   // all initialized methods
         //checkDBCanvas();
     }
 
     @Override
-    protected void onResume() {
+    protected void onResume() {                         // Resumes activity
         super.onResume();
         checkDBCanvas();
     }
 
     private void initialize() {
         Log.e("inside: ", "initialize function");
-        serverConnectionInit();
-        dataStorageInit();
-        toolBarInit();
-        listViewInit();
-        floatingActionButtonsInit();
-        activityMediatorInit();
+        serverConnectionInit();                         // Initializes server connection
+        dataStorageInit();                              //     "       database
+        toolBarInit();                                  // UI
+        listViewInit();                                 // UI
+        floatingActionButtonsInit();                    // UI
+        activityMediatorInit();                         // monitors all activities and classes
         if(userID == null) {
-            loginDialogInit();
+            loginDialogInit();                          // prompts for userID if not present
         } else {
-            connection.executeCommand("join-server", userID);
+            connection.executeCommand("join-server", userID);  // if present, establish connection with server
         }
     }
 
     private void activityMediatorInit() {
         activityMediator = ActivityMediator.getInstance();
         activityMediator.setCurrentActivity("MainActivity");
-        activityMediator.setMainActivity(this);
+        activityMediator.setMainActivity(this);                //sets the mainActivity object in activitymediator
+                                                               //to "this" MainActivity
     }
 
     private void serverConnectionInit() {
-        connection = ConnectionHandler.getInstance(this.getApplicationContext(), this);
+        connection = ConnectionHandler.getInstance(this.getApplicationContext(), this);//initializes connection with
+                                                                //server
     }
 
     private void dataStorageInit() {
