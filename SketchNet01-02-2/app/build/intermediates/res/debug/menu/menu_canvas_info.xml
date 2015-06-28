@@ -1,0 +1,7 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.efemel.sketchnet01.CanvasInfoActivity">
+
+</menu>
+<!-- From: file:/Users/anurag/Downloads/SketchNet01-02-2/app/src/main/res/menu/menu_canvas_info.xml -->
