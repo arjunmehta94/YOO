@@ -29,4 +29,4 @@
         android:id="@+id/join_canvas_button"
         android:layout_below="@+id/canvas_id_input"
         android:text="Join" />
-</RelativeLayout><!-- From: file:/Users/anurag/Downloads/SketchNet01-02-2/app/src/main/res/layout/activity_join_canvas.xml -->
+</RelativeLayout><!-- From: file:/Users/arjunmehta94/Downloads/YOO/SketchNet01-02-2/app/src/main/res/layout/activity_join_canvas.xml -->
