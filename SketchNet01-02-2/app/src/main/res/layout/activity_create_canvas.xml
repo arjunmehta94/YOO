@@ -1,0 +1,31 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.efemel.sketchnet01.CreateCanvasActivity">
+
+    <LinearLayout
+        android:id="@+id/toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar"
+            />
+    </LinearLayout>
+
+    <EditText android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:id="@+id/canvas_name_input"
+        android:layout_below="@+id/toolbar_container"
+        android:hint="Enter canvas name..."/>
+
+    <Button android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/create_canvas_button"
+        android:layout_below="@+id/canvas_name_input"
+        android:text="Create" />
+
+</RelativeLayout>

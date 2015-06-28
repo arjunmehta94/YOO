@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SketchNet01</string>
+
+    <string name="title_activity_canvas">CanvasActivity</string>
+
+    <!-- Toolbar -->
+    <string name="action_search">Search</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_home">Home</string>
+    <string name="title_activity_create_canvas">Create New Canvas</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_canvas_info">Canvas Info</string>
+
+    <string name="title_activity_join_canvas">Join Canvas</string>
+
+    <!-- User List View Context Menu Items -->
+    <string-array name="menu">
+        <item>Remove</item>
+        <item>Cancel</item>
+    </string-array>
+</resources>
