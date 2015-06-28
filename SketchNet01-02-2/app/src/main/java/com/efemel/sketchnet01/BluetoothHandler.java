@@ -32,6 +32,8 @@ public class BluetoothHandler {
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothDevice bluetoothDevice;
 
+    private BluetoothConnectedThread bluetoothConnectedThread;
+
     private BluetoothConnectThread bluetoothConnectThread;
 
     private BluetoothHandler(Activity p) {
@@ -87,7 +89,7 @@ public class BluetoothHandler {
         private final BluetoothSocket bluetoothSocket;
         private final BluetoothDevice bluetoothDevice;
         private final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
-        private BluetoothConnectedThread bluetoothConnectedThread;
+
 
         public BluetoothConnectThread(BluetoothDevice bd) {
             BluetoothSocket tmp = null;
@@ -144,6 +146,37 @@ public class BluetoothHandler {
                     String writeMessage = new String(writeBuf);
                     writeMessage = writeMessage.substring(0, end);
                     Log.e("msg", writeMessage);
+
+                    boolean startFound = false;
+                    boolean endFound = false;
+                    int beginIndex = -1;
+                    int index = 0;
+                    int endIndex = -1;
+                    try {
+                        while(!startFound) {
+                            if(writeMessage.charAt(index) == ')') {
+                                startFound = true;
+                                beginIndex = index;
+                            }
+
+                            index++;
+                        }
+
+                        while(!endFound) {
+                            if(writeMessage.charAt(index) == ')') {
+                                endFound = true;
+                                endIndex = index;
+                            }
+                            index++;
+                        }
+                        String finalMessage = writeMessage.substring(beginIndex+1, endIndex);
+                        Log.e("the final message is: ", finalMessage);
+                        bluetoothConnectedThread.write();
+                    } catch(StringIndexOutOfBoundsException e) {
+                        Log.e("sorry", "could not parse message");
+                    }
+
+
                     break;
             }
         }
@@ -181,6 +214,7 @@ public class BluetoothHandler {
                         if (buffer[i] == ")".getBytes()[0]) {
                             Log.e("getting it", "here");
                             handler.obtainMessage(1, begin, i, buffer).sendToTarget();
+
                             begin = i + 1;
                             if (i == bytes - 1) {
                                 bytes = 0;

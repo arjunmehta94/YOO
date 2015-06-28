@@ -208,7 +208,7 @@ public class CanvasView extends View {
                     drawCanvas.drawPath(drawPath, drawPaint);
                     strokes.add(thisStroke);
                     //export.sendStroke(thisStroke);
-                    connectionHandler.executeCommand("new-stroke", thisStroke);
+                    connectionHandler.executeCommand("new-stroke", thisStroke.getSize());
                     drawPath.reset();
                 }
                 mode = NONE;

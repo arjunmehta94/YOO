@@ -31,6 +31,10 @@ public class Stroke {
         return temp;
     }
 
+    public int getSize() {
+        return coordinates.size();
+    }
+
     public class Coordinate {
         public float X, Y;
         public Coordinate(float x, float y) {
