@@ -23,7 +23,7 @@ void BluetoothHandler::checkLibrary() {
 	printer->print("this is the library!!!!");
 }
 
-void BluetoothHandler::send(int8_t numberX, int8_t numberY, char mode) {
+void BluetoothHandler::send(int8_t numberX, int8_t numberY, char mode, uint8_t index) {
 	int8_t tmpX = abs(numberX);
 	int8_t tmpY = abs(numberY);
 	String ret;
@@ -98,7 +98,18 @@ void BluetoothHandler::send(int8_t numberX, int8_t numberY, char mode) {
 		}
 	}
 	ret += mode;
-	ret += ")";
+	if (index < 10){
+		ret += "00";
+		ret += String(index);
+	}
+	else if(index < 100){
+		ret += "0";
+		ret += String(index);
+	}
+	else if(index > 100){
+		ret += String(index);
+	}
+	ret += ")"; 
 	printer->print(ret);
 }
 
