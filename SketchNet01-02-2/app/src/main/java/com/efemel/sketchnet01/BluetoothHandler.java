@@ -37,7 +37,7 @@ public class BluetoothHandler {
     private BluetoothConnectThread bluetoothConnectThread;
 
     private BluetoothHandler(Activity p) {
-        initialize();
+        //initialize();
     }
 
     public static BluetoothHandler getInstance(Activity p) {
@@ -52,7 +52,7 @@ public class BluetoothHandler {
         return instance;
     }
 
-    private void initialize() {
+    public void initialize() {
         activityMediatorInit();
         bluetoothInit();
     }
@@ -158,7 +158,6 @@ public class BluetoothHandler {
                                 startFound = true;
                                 beginIndex = index;
                             }
-
                             index++;
                         }
 
@@ -171,12 +170,12 @@ public class BluetoothHandler {
                         }
                         String finalMessage = writeMessage.substring(beginIndex+1, endIndex);
                         Log.e("the final message is: ", finalMessage);
-                        bluetoothConnectedThread.write();
+                        //bluetoothConnectedThread.write();
                     } catch(StringIndexOutOfBoundsException e) {
                         Log.e("sorry", "could not parse message");
                     }
 
-
+                    bluetoothConnectedThread.write("K".getBytes());
                     break;
             }
         }

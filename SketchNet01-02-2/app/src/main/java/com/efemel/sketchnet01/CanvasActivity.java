@@ -102,6 +102,7 @@ public class CanvasActivity extends AppCompatActivity {
 
     private void bluetoothConfig() {
         bluetoothHandler = BluetoothHandler.getInstance(this);
+        bluetoothHandler.initialize();
     }
 
     private void createPenColorDialog() {
