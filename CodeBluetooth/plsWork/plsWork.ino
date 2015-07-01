@@ -13,9 +13,9 @@ void loop()
 {
   //simulate receiving signal from android
   rand1 = random(255);
+  x = random(-128, 127);
+  y = random(-128, 127);
   for (char i = 0; i<rand1; i++){
-    x = random(-128, 127);
-    y = random(-128, 127);
     blu.send(x, y, '*', i);
   }
   
