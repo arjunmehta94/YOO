@@ -72,44 +72,43 @@ int8_t ADNS3530::readDY() {
 	return read(DELTA_Y);
 }
 
+int8_t ADNS3530::readSQUAL() {
+	return read(SQUAL);
+}
+
+void ADNS3530::readPixelGrab() {
+	write(PIXEL_GRAB, 0);
+	int8_t pixel_array[462];
+	for(int i=0; i<462; i++) {
+		if(read(MOTION) & 0b01000000) {
+			pixel_array[i]=read(PIXEL_GRAB);
+		}
+	}
+}
+
 int8_t ADNS3530::read(int8_t address) {
 	int8_t value=0;
-	//pinMode(_MOSI, OUTPUT); //Make sure the SDIO pin is set as an output.
     digitalWrite(_NCS, LOW);
-    digitalWrite(_SCLK, HIGH); //Make sure the clock is high.
+    digitalWrite(_SCLK, HIGH);
     delayMicroseconds(10);
-    address &= 0x7F;    //Make sure the highest bit of the address byte is '0' to indicate a read.
-    //Send the Address to the PAW3205
+    address &= 0x7F;
     for(int address_bit=7; address_bit >=0; address_bit--){
-        digitalWrite(_SCLK, LOW);  //Lower the clock
+        digitalWrite(_SCLK, LOW);
         if(address & (1<<address_bit)){
             digitalWrite(_MOSI, HIGH);
         }
         else{
             digitalWrite(_MOSI, LOW);
         }
-        delayMicroseconds(10);
         digitalWrite(_SCLK, HIGH);
-        delayMicroseconds(10);
     }
-    //Serial.println("Yo");
-    delayMicroseconds(10);   //Allow extra time for PAW3205 to transition the SDIO pin (per datasheet)
-    //Make SDIO an input on the microcontroller
-    //pinMode(_sdio, INPUT);	//Make sure the SDIO pin is set as an input.
-	//digitalWrite(_sdio, HIGH); //Enable the internal pull-up
-    //delayMicroseconds(10);
+    delayMicroseconds(10);   
     for(int value_bit=7; value_bit >= 0; value_bit--){
-        digitalWrite(_SCLK, LOW);  //Lower the clock
-        //delayMicroseconds(1); //Allow the PAW3205 to configure the SDIO pin
-        
-        digitalWrite(_SCLK, HIGH);  //Raise the clock
-        delayMicroseconds(10);
-        //delayMicroseconds(1);
+        digitalWrite(_SCLK, LOW);
+        digitalWrite(_SCLK, HIGH);
+        //delayMicroseconds(10);
         if(digitalRead(_MISO))
 			value |= (1<<value_bit);
-		delayMicroseconds(10);
-        //If the SDIO pin is high, set the current bit in the 'value' variable. If low, leave the value bit default (0).    
-		//if((ADNS_PIN & (1<<ADNS_sdio)) == (1<<ADNS_sdio))value|=(1<<value_bit);
     }
     delayMicroseconds(10);
     digitalWrite(_NCS, HIGH);
@@ -118,40 +117,26 @@ int8_t ADNS3530::read(int8_t address) {
 }
 
 void ADNS3530::write(int8_t address, int8_t data) {
-    digitalWrite(_SCLK, HIGH);          //Make sure the clock is high.
+    digitalWrite(_SCLK, HIGH);
     digitalWrite(_NCS,LOW);
 
     delayMicroseconds(10);
-    address |= 0x80;    //Make sure the highest bit of the address byte is '1' to indicate a write.
-
-    //Send the Address to the PAW3205
+    address |= 0x80;
     for(int address_bit=7; address_bit >=0; address_bit--){
-        digitalWrite(_SCLK, LOW); //Lower the clock
-        
-        //delayMicroseconds(10); //Give a small delay (only needed for the first iteration to ensure that the PAW3205 relinquishes
-               		//control of SDIO if we are performing this write after a 'read' command.
-        
-        //If the current bit is a 1, set the SDIO pin. If not, clear the SDIO pin
+        digitalWrite(_SCLK, LOW);
         if(address & (1<<address_bit))
         	digitalWrite(_MOSI, HIGH);
         else
         	digitalWrite(_SCLK, LOW);
-        delayMicroseconds(10);
         digitalWrite(_SCLK, HIGH);
-        delayMicroseconds(10);
     }
-    
-    //Send the Value byte to the PAW3205
     for(int data_bit=7; data_bit >= 0; data_bit--){
-        digitalWrite(_SCLK, LOW);  //Lower the clock
-        //If the current bit is a 1, set the SDIO pin. If not, clear the SDIO pin
+        digitalWrite(_SCLK, LOW);
         if(data & (1<<data_bit))
         	digitalWrite(_MOSI, HIGH);
         else 
         	digitalWrite(_MOSI, LOW);
-        delayMicroseconds(10);
         digitalWrite(_SCLK, HIGH);
-        delayMicroseconds(10);
 	}
 
 	delayMicroseconds(20);

@@ -26,6 +26,8 @@ class ADNS3530 {
 #define MOTION 					0x02
 #define DELTA_X					0x03
 #define DELTA_Y					0x04
+#define SQUAL					0x05
+#define PIXEL_GRAB				0x0B
 #define POWER_UP_RESET			0x3A
 
 
