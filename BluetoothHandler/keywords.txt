@@ -1,0 +1,5 @@
+BluetoothHandler	KEYWORD1
+send			KEYWORD2
+penUp			KEYWORD2
+penDown			KEYWORD2
+endWrite		KEYWORD2

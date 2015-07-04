@@ -3,15 +3,19 @@
 #include <Arduino.h>
 class ADNS3530 {
 	public:
-	ADNS3530(HardwareSerial&,int,int,int,int);
+	ADNS3530(int,int,int,int);
 	void checkLibrary();
 	void powerUp();
-	void sync();
-	int8_t readProductID();
+	void resetData();
+	int8_t checkCommunication();
 	void readMotion();
 
-	int8_t readDX();
-	int8_t readDY();
+	int8_t readDeltaX();
+	int8_t readDeltaY();
+	int8_t readSQUAL();
+	void readPixelGrab();
+	bool checkOverFlow();
+	bool available();
 
 	private:
 	int _MOSI;

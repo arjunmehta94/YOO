@@ -139,12 +139,13 @@ public class CanvasView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        Log.e("Debug","inside invalidate");
         canvas.save();
         //canvas.scale(scaleFactor, scaleFactor);
         //canvas.translate(DtranslateX / scaleFactor, DtranslateY / scaleFactor);
-
         canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
         canvas.drawPath(drawPath, drawPaint);
+        Log.e("Debug","drawn path");
 
         canvas.restore();
     }
@@ -225,11 +226,14 @@ public class CanvasView extends View {
     public void drawNewStroke(Stroke s) {
         Log.e("Debug", "Starting to draw");
         strokes.add(s);
+        Log.e("Debug", "added to stroke list");
         drawPath.moveTo(s.coordinates.get(0).X,s.coordinates.get(0).Y);
 
         for(int i=1; i<s.coordinates.size(); i++) {
             drawPath.lineTo(s.coordinates.get(i).X, s.coordinates.get(i).Y);
         }
+
+        Log.e("Debug", "finished drawing path");
         Paint dp = new Paint();
 
         dp.setColor(s.strokeColor);
@@ -239,10 +243,12 @@ public class CanvasView extends View {
         dp.setStrokeWidth(20);
         dp.setStrokeJoin(Paint.Join.ROUND);
         dp.setStrokeCap(Paint.Cap.ROUND);
+        Log.e("Debug", "finished setting paint");
 
         drawCanvas.drawPath(drawPath, dp);
+        Log.e("Debug", "drawn to canvas");
         drawPath.reset();
-
+        Log.e("Debug", "invalidating");
         invalidate();
     }
 

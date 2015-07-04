@@ -27,7 +27,7 @@ public class BluetoothHandler {
 
     private ActivityMediator activityMediator;
 
-    private Activity parentActivity;
+    private CanvasActivity parentActivity;
 
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothDevice bluetoothDevice;
@@ -36,11 +36,17 @@ public class BluetoothHandler {
 
     private BluetoothConnectThread bluetoothConnectThread;
 
-    private BluetoothHandler(Activity p) {
+    private int xCoordinate = 0;
+    private int yCoordinate = 0;
+
+    private Stroke thisStroke;
+
+    private BluetoothHandler(CanvasActivity p) {
         //initialize();
+        parentActivity = p;
     }
 
-    public static BluetoothHandler getInstance(Activity p) {
+    public static BluetoothHandler getInstance(CanvasActivity p) {
         //parentActivity = p;
         if(instance == null) {
             instance = new BluetoothHandler(p);
@@ -53,6 +59,7 @@ public class BluetoothHandler {
     }
 
     public void initialize() {
+        thisStroke = new Stroke("anurag");
         activityMediatorInit();
         bluetoothInit();
     }
@@ -120,7 +127,9 @@ public class BluetoothHandler {
                 }
             }
             bluetoothConnectedThread = new BluetoothConnectedThread(bluetoothSocket);
-            bluetoothConnectedThread.start();
+            //bluetoothConnectedThread.start();
+            Log.e("Debug","trying to run on UI thread");
+            parentActivity.runOnUiThread(bluetoothConnectedThread);
 
         }
 
@@ -154,7 +163,7 @@ public class BluetoothHandler {
                     int endIndex = -1;
                     try {
                         while(!startFound) {
-                            if(writeMessage.charAt(index) == ')') {
+                            if(writeMessage.charAt(index) == '\n') {
                                 startFound = true;
                                 beginIndex = index;
                             }
@@ -162,7 +171,7 @@ public class BluetoothHandler {
                         }
 
                         while(!endFound) {
-                            if(writeMessage.charAt(index) == ')') {
+                            if(writeMessage.charAt(index) == '\n') {
                                 endFound = true;
                                 endIndex = index;
                             }
@@ -170,16 +179,56 @@ public class BluetoothHandler {
                         }
                         String finalMessage = writeMessage.substring(beginIndex+1, endIndex);
                         Log.e("the final message is: ", finalMessage);
+                        parseFinalMessage(finalMessage);
                         //bluetoothConnectedThread.write();
                     } catch(StringIndexOutOfBoundsException e) {
                         Log.e("sorry", "could not parse message");
                     }
 
-                    bluetoothConnectedThread.write("K".getBytes());
+                    //bluetoothConnectedThread.write("K".getBytes());
                     break;
             }
         }
     };
+
+    private void parseFinalMessage(String finalMessage) {
+        //int signX = Integer.parseInt(finalMessage.substring(0,1));
+        int signX;
+        if(finalMessage.substring(0,1).equals("+")) {
+            signX = 1;
+        } else {
+            signX = -1;
+        }
+        //int finalMessageX = Integer.parseInt(finalMessage.substring(1,5))*signX;
+        int signY;
+        if(finalMessage.substring(4,5).equals("+")) {
+            signY = 1;
+        } else {
+            signY = -1;
+        }
+
+        //int finalMessageY = Integer.parseInt(finalMessage.substring(6))*signY;
+        //String x =
+        int finalMessageX = java.lang.Integer.parseInt(finalMessage.substring(1,4));
+        int finalMessageY = java.lang.Integer.parseInt(finalMessage.substring(5,8));
+        //activityMediator.drawNewStrokeOnCanvasView();
+        finalMessageX*=signX;
+        finalMessageY*=signY;
+        Log.e("here: ", "X: "+finalMessageX + "Y: "+finalMessageY);
+        //Log.e("Y: ", ""+finalMessageY);
+        //xCoordinate += finalMessageX;
+        //yCoordinate += finalMessageY;
+
+        if(((xCoordinate + finalMessageX)!=xCoordinate)||((yCoordinate + finalMessageY)!=yCoordinate)) {
+            xCoordinate+=finalMessageX;
+            yCoordinate+=finalMessageY;
+            thisStroke.addCoordinate(xCoordinate,yCoordinate);
+
+            activityMediator.drawNewStrokeOnCanvasView(thisStroke);
+        }
+
+        //Log.e("Y: ", ""+finalMessageY);
+    }
 
     private class BluetoothConnectedThread extends Thread {
         private final BluetoothSocket bluetoothSocket;
@@ -203,6 +252,7 @@ public class BluetoothHandler {
         }
 
         public void run() {
+            Log.e("DEBUG", "started to run");
             byte[] buffer = new byte[1024];
             int begin = 0;
             int bytes = 0;
@@ -210,9 +260,19 @@ public class BluetoothHandler {
                 try {
                     bytes += inputStream.read(buffer, bytes, buffer.length - bytes);
                     for (int i = begin; i < bytes; i++) {
-                        if (buffer[i] == ")".getBytes()[0]) {
-                            Log.e("getting it", "here");
-                            handler.obtainMessage(1, begin, i, buffer).sendToTarget();
+                        if (buffer[i] == "\n".getBytes()[0]) {
+                            //Log.e("getting it", "here");
+                            //handler.obtainMessage(1, begin, i, buffer).sendToTarget();
+
+                            if((buffer[begin]!=0)&&(buffer[begin+1]!=0)) {
+                                System.out.println("X: "+ buffer[begin] + "Y: " +buffer[begin+1]);
+                                xCoordinate += buffer[begin];
+                                yCoordinate += buffer[begin+1];
+
+                                thisStroke.addCoordinate((float)xCoordinate,(float)yCoordinate);
+
+                                activityMediator.drawNewStrokeOnCanvasView(thisStroke);
+                            }
 
                             begin = i + 1;
                             if (i == bytes - 1) {

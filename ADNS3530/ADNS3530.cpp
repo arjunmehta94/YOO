@@ -1,9 +1,7 @@
 #include "ADNS3530.h"
-HardwareSerial* printer1;
 
-ADNS3530::ADNS3530(HardwareSerial &print, int mosi, int miso, int sclk, int ncs) {
-	printer1 = &print;
-	printer1->begin(9600);
+ADNS3530::ADNS3530(int mosi, int miso, int sclk, int ncs)
+{
 	_MOSI = mosi;
 	pinMode(_MOSI,OUTPUT);
 	_MISO = miso;
@@ -14,9 +12,6 @@ ADNS3530::ADNS3530(HardwareSerial &print, int mosi, int miso, int sclk, int ncs)
 	pinMode(_NCS,OUTPUT);
 }
 
-void ADNS3530::checkLibrary() {
-	printer1->print("ADNS3530Library :)");
-}
 
 void ADNS3530::powerUp() {
 	digitalWrite(_NCS, HIGH);
@@ -30,16 +25,9 @@ void ADNS3530::powerUp() {
 	int8_t mot = read(MOTION);
 	int8_t tempX = read(DELTA_X);
 	int8_t tempY = read(DELTA_Y);
-
-	printer1->print("MOT: ");
-	printer1->println(mot);
-	printer1->print("DX: ");
-	printer1->println(tempX);
-	printer1->print("DY: ");
-	printer1->print(tempY);
 }
 
-void ADNS3530::sync() {
+void ADNS3530::resetData() {
 	digitalWrite(_NCS, HIGH);
 	digitalWrite(_NCS, LOW);
 	write(POWER_UP_RESET, 0x5A);
@@ -47,28 +35,25 @@ void ADNS3530::sync() {
 	int8_t mot = read(MOTION);
 	int8_t tempX = read(DELTA_X);
 	int8_t tempY = read(DELTA_Y);
-
-	/*printer1->print("MOT: ");
-	printer1->println(mot);
-	printer1->print("DX: ");
-	printer1->println(tempX);
-	printer1->print("DY: ");
-	printer1->print(tempY);*/
 }
 
-int8_t ADNS3530::readProductID() {
-	return read(PRODUCT_ID);
+int8_t ADNS3530::checkCommunication() {
+    return read(PRODUCT_ID);
 }
 
-void ADNS3530::readMotion() {
-
+bool ADNS3530::checkOverFlow() {
+    return ((read(MOTION)<<1)>>7);
 }
 
-int8_t ADNS3530::readDX() {
+bool ADNS3530::available() {
+    return (read(MOTION)>>7);
+}
+
+int8_t ADNS3530::readDeltaX() {
 	return read(DELTA_X);
 }
 
-int8_t ADNS3530::readDY() {
+int8_t ADNS3530::readDeltaY() {
 	return read(DELTA_Y);
 }
 
@@ -83,6 +68,9 @@ void ADNS3530::readPixelGrab() {
 		if(read(MOTION) & 0b01000000) {
 			pixel_array[i]=read(PIXEL_GRAB);
 		}
+	}
+	if(read(MOTION) & 0b00100000) {//MOTION register's PIXFIRST variable set to HIGH
+
 	}
 }
 
