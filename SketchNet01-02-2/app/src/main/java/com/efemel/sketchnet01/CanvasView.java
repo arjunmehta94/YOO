@@ -107,7 +107,7 @@ public class CanvasView extends View {
 
             for(int j=1; j<strokes.get(i).coordinates.size(); j++) {
                 drawPath.lineTo((strokes.get(i).coordinates.get(j).X*scaleFactor + DtranslateX), (strokes.get(i).coordinates.get(j).Y*scaleFactor + DtranslateY));
-                Log.e("" + strokes.get(i).coordinates.get(j).X, "" +strokes.get(i).coordinates.get(j).Y);
+                //Log.e("" + strokes.get(i).coordinates.get(j).X, "" +strokes.get(i).coordinates.get(j).Y);
             }
             drawPaint.setStrokeWidth(20*scaleFactor);
             Paint dp = new Paint();
