@@ -23,6 +23,7 @@ import java.util.UUID;
 
 /**
  * Created by anurag on 16/6/15.
+ * jeeeeeet jeeeeeet jeeeeeet jeeeeeet jeeeeeet jeeeeeeet jeeeeeeet
  */
 public class BluetoothHandler {
     private static BluetoothHandler instance = null;
