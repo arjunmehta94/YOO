@@ -2,6 +2,7 @@
 //# COMP 4521    #  Farhad Bin Siddique        STUDENT ID 20088450         EMAIL ADDRESS fsiddique@connect.ust.hk
 package com.efemel.sketchnet01;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -65,6 +66,20 @@ public class CanvasActivity extends AppCompatActivity {
                 "userID: " + userID + ", canvasID: " + canvasID, Toast.LENGTH_SHORT).show();
 //        mPrefs = getPreferences(MODE_PRIVATE);
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        //Log.e("request code", resultCode + "");
+        if (requestCode == 1){
+            if (resultCode == Activity.RESULT_OK){
+                // start bluetooth thread here
+
+            }
+            else{
+                Log.e("error", "bluetooth not enabled");
+            }
+        }
     }
 
     private void serverConnectionInit() {

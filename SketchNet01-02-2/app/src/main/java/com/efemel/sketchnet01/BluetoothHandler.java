@@ -77,19 +77,21 @@ public class BluetoothHandler {
         if(!bluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             parentActivity.startActivityForResult(enableBtIntent, 1);
-        }
-
-        Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
-        if(pairedDevices.size() > 0) {
-            for(BluetoothDevice device : pairedDevices) {
-                bluetoothDevice = device;
+        } else {
+            Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+            if(pairedDevices.size() > 0) {
+                for(BluetoothDevice device : pairedDevices) {
+                    bluetoothDevice = device;
+                }
             }
+
+            Log.e("inside bluinit:", bluetoothDevice.toString());
+
+            bluetoothConnectThread = new BluetoothConnectThread(bluetoothDevice);
+            bluetoothConnectThread.start();
         }
 
-        Log.e("inside bluinit:", bluetoothDevice.toString());
 
-        bluetoothConnectThread = new BluetoothConnectThread(bluetoothDevice);
-        bluetoothConnectThread.start();
 
     }
 
