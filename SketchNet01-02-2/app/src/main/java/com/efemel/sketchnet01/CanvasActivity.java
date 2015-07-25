@@ -4,6 +4,7 @@ package com.efemel.sketchnet01;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -22,6 +23,8 @@ import android.widget.Toast;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
+import java.util.Set;
+
 
 public class CanvasActivity extends AppCompatActivity {
 
@@ -38,6 +41,7 @@ public class CanvasActivity extends AppCompatActivity {
     private String userID;
     private String canvasID;
     private String canvasTitle;
+    private String btAddress = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +75,25 @@ public class CanvasActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         //Log.e("request code", resultCode + "");
+        BluetoothDevice dev = null;
         if (requestCode == 1){
             if (resultCode == Activity.RESULT_OK){
-                // start bluetooth thread here
 
+                Set<BluetoothDevice> pairedDevices = bluetoothHandler.getBluetoothAdapter().getBondedDevices();
+                if(pairedDevices.size() > 0) {
+                    for(BluetoothDevice device : pairedDevices) {
+                        // need to identify the correct device
+                        // if device == correct bluetooth device, then do:
+                        if(device.getAddress() == btAddress){
+                            dev = device;
+                        }
+                    }
+                }
+                if (dev == null){
+                    // perform discovery and pairing
+                }
+                // start bluetooth thread here
+                bluetoothHandler.connectBluetooth(dev);
             }
             else{
                 Log.e("error", "bluetooth not enabled");
