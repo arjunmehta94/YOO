@@ -6,9 +6,12 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Display;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -68,6 +71,7 @@ public class BluetoothHandler {
 
     public void initialize() {
         thisStroke = new Stroke("anurag");
+        thisStroke.setColor(Color.BLACK);
         activityMediatorInit();
         bluetoothInit();
     }
@@ -133,9 +137,9 @@ public class BluetoothHandler {
                 }
             }
             bluetoothConnectedThread = new BluetoothConnectedThread(bluetoothSocket);
-            //bluetoothConnectedThread.start();
-            Log.e("Debug","trying to run on UI thread");
-            parentActivity.runOnUiThread(bluetoothConnectedThread);
+            bluetoothConnectedThread.start();
+            Log.e("Debug", "trying to run on UI thread");
+            //parentActivity.runOnUiThread(bluetoothConnectedThread);
 
         }
 
@@ -270,15 +274,8 @@ public class BluetoothHandler {
                             //Log.e("getting it", "here");
                             //handler.obtainMessage(1, begin, i, buffer).sendToTarget();
 
-                            if((buffer[begin]!=0)&&(buffer[begin+1]!=0)) {
-                                System.out.println("X: "+ buffer[begin] + "Y: " +buffer[begin+1]);
-                                xCoordinate += buffer[begin];
-                                yCoordinate += buffer[begin+1];
+                            publishStrokeInfo(buffer[i+1], buffer[i+2]);
 
-                                thisStroke.addCoordinate((float)xCoordinate,(float)yCoordinate);
-
-                                activityMediator.drawNewStrokeOnCanvasView(thisStroke);
-                            }
 
                             begin = i + 1;
                             if (i == bytes - 1) {
@@ -290,6 +287,30 @@ public class BluetoothHandler {
                 } catch (IOException e) {
                     //Log.e("not getting shit",":P");
                 }
+            }
+        }
+
+        public void publishStrokeInfo(byte byteX, byte byteY) {
+            if((byteX!=0)&&(byteY!=0)) {
+
+
+                Display display = parentActivity.getWindowManager().getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                xCoordinate += byteX*size.x/100;
+                yCoordinate += byteY*size.y/100;
+                System.out.println("X: "+ xCoordinate + "Y: " +yCoordinate);
+                thisStroke.addCoordinate((float)xCoordinate,(float)yCoordinate);
+
+                Log.e("bluetooth Stroke:", thisStroke.toString());
+
+                //activityMediator.drawNewStrokeOnCanvasView(thisStroke);
+                parentActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        parentActivity.canvasView.drawNewStroke(thisStroke);
+                    }
+                });
             }
         }
 

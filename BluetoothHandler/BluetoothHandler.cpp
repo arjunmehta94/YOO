@@ -36,9 +36,12 @@ void BluetoothHandler::send(int8_t outgoingByteX, int8_t outgoingByteY)
         //sendDataY = (char) (outgoingByteY<0?256+outgoingByteY:outgoingByteY);
 		sendDataX = outgoingByteX;
 		sendDataY = outgoingByteY;
-		
-        printer->print((char)sendDataX);
-        printer->println((char)sendDataY);
+		/*printer->print("X: ");
+        printer->print((int8_t)sendDataX);
+        printer->print("Y: ");
+        printer->println((int8_t)sendDataY);*/
+        printer->print(sendDataX);
+        printer->println(sendDataY);
 }
 
 //penDown
