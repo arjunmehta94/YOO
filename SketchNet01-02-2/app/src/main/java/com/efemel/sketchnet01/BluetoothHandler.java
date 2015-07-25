@@ -48,6 +48,11 @@ public class BluetoothHandler {
     private BluetoothHandler(CanvasActivity p) {
         //initialize();
         parentActivity = p;
+        Display display = parentActivity.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        xCoordinate = size.x/2;
+        yCoordinate = size.y/2;
     }
 
     public static BluetoothHandler getInstance(CanvasActivity p) {
@@ -266,10 +271,10 @@ public class BluetoothHandler {
                     bytes += inputStream.read(buffer, bytes, buffer.length - bytes);
                     for (int i = begin; i < bytes; i++) {
                         if (buffer[i] == "\n".getBytes()[0]) {
-                            //Log.e("getting it", "here");
+                            Log.e("getting it", buffer[i-2]+"");
                             //handler.obtainMessage(1, begin, i, buffer).sendToTarget();
 
-                            publishStrokeInfo(buffer[i+1], buffer[i+2]);
+                            publishStrokeInfo(buffer[i-2], buffer[i-1]);
 
 
                             begin = i + 1;
@@ -292,8 +297,8 @@ public class BluetoothHandler {
                 Display display = parentActivity.getWindowManager().getDefaultDisplay();
                 Point size = new Point();
                 display.getSize(size);
-                xCoordinate += byteX*size.x/100;
-                yCoordinate += byteY*size.y/100;
+                xCoordinate += byteX;
+                yCoordinate += byteY;
                 System.out.println("X: "+ xCoordinate + "Y: " +yCoordinate);
                 thisStroke.addCoordinate((float)xCoordinate,(float)yCoordinate);
 

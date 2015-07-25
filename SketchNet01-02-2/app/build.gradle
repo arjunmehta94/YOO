@@ -29,4 +29,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.github.nkzawa:socket.io-client:0.3.0'
     compile 'com.getbase:floatingactionbutton:1.9.0'
+
 }
