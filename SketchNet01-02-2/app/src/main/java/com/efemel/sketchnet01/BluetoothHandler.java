@@ -63,6 +63,13 @@ public class BluetoothHandler {
         return instance;
     }
 
+    public BluetoothDevice getBluetoothDevice(){
+        return bluetoothDevice;
+    }
+
+    public BluetoothAdapter getBluetoothAdapter(){
+        return bluetoothAdapter;
+    }
     public static BluetoothHandler getInstance() {
         return instance;
     }
@@ -83,23 +90,21 @@ public class BluetoothHandler {
         if(bluetoothAdapter == null) {
         }
 
-        if(!bluetoothAdapter.isEnabled()) {
+        if(!bluetoothAdapter.isEnabled()) { // if bluetooth is not enabled, enable it
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             parentActivity.startActivityForResult(enableBtIntent, 1);
+        } else { // if bluetooth is already enabled
+
+
+            Log.e("inside bluinit:", bluetoothDevice.toString());
+
+
         }
 
-        Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
-        if(pairedDevices.size() > 0) {
-            for(BluetoothDevice device : pairedDevices) {
-                bluetoothDevice = device;
-            }
-        }
-
-        Log.e("inside bluinit:", bluetoothDevice.toString());
-
+    }
+    public void connectBluetooth(BluetoothDevice bluetoothDevice){
         bluetoothConnectThread = new BluetoothConnectThread(bluetoothDevice);
         bluetoothConnectThread.start();
-
     }
 
     private class BluetoothConnectThread extends Thread {
