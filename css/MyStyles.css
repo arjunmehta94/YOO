@@ -1,0 +1,29 @@
+html, body {
+  width: auto !important;
+  overflow-x: hidden !important;
+}
+
+.navbar {
+	margin-bottom: 0px;
+}
+.jumbotron {
+	background-image: url('../images/pebbles.jpg');
+	color:white;
+	background-attachment: fixed;
+	min-height: 100vh;
+	margin-top: 0;
+}
+.orient-right {
+	margin-right: 0;
+	margin-left: auto;
+	margin-top: 250px;
+	width: 400px;
+}
+
+.navbar-inverse {
+	background-color: #000000;
+}
+
+.navbar-inverse .navbar-brand {
+	color: #FFFFFF;
+}
