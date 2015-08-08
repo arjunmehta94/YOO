@@ -2,32 +2,32 @@
 <items version="2" >
 
     <item
-        jar="/Users/arjunmehta94/AndroidStudioProjects/BLE/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.0/libs/internal_impl-22.2.0.jar"
+        jar="/Users/anurag/Documents/projects/git-stuff/YOO/BLE 2/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.0/jars/libs/internal_impl-22.2.0.jar"
         jumboMode="false"
         revision="22.0.1"
         sha1="57f2ab85c164ff1676ec64dee787981c046fab79">
-        <dex dex="/Users/arjunmehta94/AndroidStudioProjects/BLE/app/build/intermediates/pre-dexed/debug/internal_impl-22.2.0-2c8afa7ebbce4d13529f327ab7ccbba6cfd685b3.jar" />
+        <dex dex="/Users/anurag/Documents/projects/git-stuff/YOO/BLE 2/app/build/intermediates/pre-dexed/debug/internal_impl-22.2.0-2268f8f8edba9119d1dc3610b4eccd407332834b.jar" />
     </item>
     <item
-        jar="/Users/arjunmehta94/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/22.2.0/support-annotations-22.2.0.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="66b42a1f3eb7676070b7ef7f14b603483aecbee1">
-        <dex dex="/Users/arjunmehta94/AndroidStudioProjects/BLE/app/build/intermediates/pre-dexed/debug/support-annotations-22.2.0-71efaf9fe48321af3f4d26b91408a9b80569daeb.jar" />
-    </item>
-    <item
-        jar="/Users/arjunmehta94/AndroidStudioProjects/BLE/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/classes.jar"
+        jar="/Users/anurag/Documents/projects/git-stuff/YOO/BLE 2/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/jars/classes.jar"
         jumboMode="false"
         revision="22.0.1"
         sha1="73753982da6bde518f3a4c6b372749981d14d1a0">
-        <dex dex="/Users/arjunmehta94/AndroidStudioProjects/BLE/app/build/intermediates/pre-dexed/debug/classes-3634e7ca7fb336314137a03867685a41a13ca4f1.jar" />
+        <dex dex="/Users/anurag/Documents/projects/git-stuff/YOO/BLE 2/app/build/intermediates/pre-dexed/debug/classes-6cdc07704810548e17da5c789e9803396013a01d.jar" />
     </item>
     <item
-        jar="/Users/arjunmehta94/AndroidStudioProjects/BLE/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.0/classes.jar"
+        jar="/Applications/adt-bundle-mac-x86_64-20140702/sdk/extras/android/m2repository/com/android/support/support-annotations/22.2.0/support-annotations-22.2.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="66b42a1f3eb7676070b7ef7f14b603483aecbee1">
+        <dex dex="/Users/anurag/Documents/projects/git-stuff/YOO/BLE 2/app/build/intermediates/pre-dexed/debug/support-annotations-22.2.0-f851e1f8b356482a10e47e8c7c0986bb5222f709.jar" />
+    </item>
+    <item
+        jar="/Users/anurag/Documents/projects/git-stuff/YOO/BLE 2/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.0/jars/classes.jar"
         jumboMode="false"
         revision="22.0.1"
         sha1="1ee588ff2c4daf7b97c1cbf922a6c7f027285c2f">
-        <dex dex="/Users/arjunmehta94/AndroidStudioProjects/BLE/app/build/intermediates/pre-dexed/debug/classes-02578138479efb733fb3667366f74cb591ca781a.jar" />
+        <dex dex="/Users/anurag/Documents/projects/git-stuff/YOO/BLE 2/app/build/intermediates/pre-dexed/debug/classes-236e1159b7e5bd5ffa051eb60210dffdf8326e76.jar" />
     </item>
 
 </items>

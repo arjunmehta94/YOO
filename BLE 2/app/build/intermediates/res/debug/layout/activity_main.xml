@@ -16,9 +16,5 @@
         android:onClick="click"
         android:layout_marginTop="53dp"
         android:layout_marginStart="40dp" />
-    <FrameLayout
-        android:id="@+id/container"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"/>
 </LinearLayout>
-<!-- From: file:/Users/arjunmehta94/AndroidStudioProjects/BLE/app/src/main/res/layout/activity_main.xml -->
+<!-- From: file:/Users/anurag/Documents/projects/git-stuff/YOO/BLE%202/app/src/main/res/layout/activity_main.xml -->

@@ -65,7 +65,7 @@ public class MainActivity extends FragmentActivity {
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
 
-        if (mBluetoothAdapter.isEnabled()){
+        if (mBluetoothAdapter.isEnabled()) {
             mBluetoothAdapter.disable();
         }
 
@@ -109,6 +109,8 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
+
+
 
         if (requestCode == REQUEST_ENABLE_BT){
             if (resultCode == Activity.RESULT_OK){

@@ -168,9 +168,7 @@ public class DeviceSearchDialog extends DialogFragment {
                         if (mBLEScanner == null){
                             mBLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
                         }
-
                         mBLEScanner.stopScan(mScanCallback);
-
                     }
                 }
             }, SCAN_PERIOD);
