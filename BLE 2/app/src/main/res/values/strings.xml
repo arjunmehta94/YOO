@@ -1,9 +1,0 @@
-<resources>
-    <string name="app_name">BLE</string>
-
-    <string name="ble_not_supported">\"BLE not supported\"</string>
-    <string name="bt_not_supported">\"Bluetooth not supported\"</string>
-    <string name="button_off">Off</string>
-    <string name="button_on">On</string>
-    <string name="title_activity_device_search_dialog">DeviceSearchDialog</string>
-</resources>
