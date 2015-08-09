@@ -86,6 +86,8 @@ public class DeviceSearchDialog extends DialogFragment {
 
     }
 
+
+
     private static class ListAdapterCustom extends BaseAdapter {
 
         DeviceSearchDialog parentFragment;
@@ -152,6 +154,7 @@ public class DeviceSearchDialog extends DialogFragment {
             return  v;
         }
     }
+
 
     public void scanLeDevice(final boolean enable) {
         if (enable) {
@@ -256,6 +259,7 @@ public class DeviceSearchDialog extends DialogFragment {
 
     private void bluetoothDeviceCLicked(BluetoothDevice device) {
         //todo..
+        Log.e("Device Clicked: ",device.getName());
     }
 
     @Override

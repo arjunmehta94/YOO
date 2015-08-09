@@ -110,8 +110,6 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
 
-
-
         if (requestCode == REQUEST_ENABLE_BT){
             if (resultCode == Activity.RESULT_OK){
                 Fragment f = getSupportFragmentManager().findFragmentByTag(dialogBoxTag);
@@ -120,8 +118,6 @@ public class MainActivity extends FragmentActivity {
                 }
 
             }
-
-
         }
     }
 }
