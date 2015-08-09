@@ -3,6 +3,7 @@ package e.feather_con_1;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -31,12 +32,14 @@ public class MainActivity extends FragmentActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == 100) {
+            DialogFragment f = (DialogFragment) getSupportFragmentManager().findFragmentByTag("DiscoveryListTag");
             if (resultCode == Activity.RESULT_OK) {
                 Log.e("clicked OK", "clicked OK");
-                Fragment f = getSupportFragmentManager().findFragmentByTag("DiscoveryListTag");
                 if (f != null) {
                     deviceManager.startDiscovery();
                 }
+            } else {
+                f.dismissAllowingStateLoss();
             }
         }
     }

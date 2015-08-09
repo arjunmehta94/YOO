@@ -58,6 +58,8 @@ public class DiscoveryList extends DialogFragment {
         }
         deviceListView.setAdapter(adapterCustom);
 
+        this.getView().setVisibility(View.GONE);
+
 
         //scanLeDevice(true);
 
@@ -82,6 +84,7 @@ public class DiscoveryList extends DialogFragment {
         public boolean add(BluetoothDevice device) {
             boolean b = !deviceList.contains(device) && deviceList.add(device);
             if (b){
+                Log.e("inside", ""+deviceList.size());
                 this.notifyDataSetChanged();
             }
             return b;
