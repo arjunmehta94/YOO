@@ -51,7 +51,7 @@ public class DeviceManager {
 
     private Handler mHandler;
 
-    public static boolean deviceListExists;
+    //public static boolean deviceListExists;
 
     private DeviceManager() {
         LOLLIPOP = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
@@ -152,17 +152,17 @@ public class DeviceManager {
         discoveryList = new DiscoveryList();
         discoveryList.show(((FragmentActivity) mContext).getSupportFragmentManager(), discoveryListTag);
         mHandler = new Handler();
-        deviceListExists = false;
+        //deviceListExists = false;
 
         //why check if mBluetoothAdapter is null?
-        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+        //if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             ((Activity) mContext).startActivityForResult(enableBtIntent, 100);
 
             //startDiscovery();
-        } else {
-            startDiscovery();
-        }
+        //} else {
+            //startDiscovery();
+        //}
 
 
         // }
@@ -172,9 +172,9 @@ public class DeviceManager {
 
     public void startDiscovery() {
         ((Activity) mContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
-        while(!deviceListExists) {
+        //while(!deviceListExists) {
 
-        }
+        //}
         discoveryList.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {

@@ -57,7 +57,7 @@ public class DiscoveryList extends DialogFragment {
             adapterCustom = new ListAdapterCustom(getActivity());
         }
         deviceListView.setAdapter(adapterCustom);
-        deviceManager.deviceListExists = true;
+        //deviceManager.deviceListExists = true;
 
         this.getView().setVisibility(View.GONE);
 
