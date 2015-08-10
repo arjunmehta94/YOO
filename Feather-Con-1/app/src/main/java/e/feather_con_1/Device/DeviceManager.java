@@ -51,17 +51,17 @@ public class DeviceManager {
 
     private Handler mHandler;
 
-    private static boolean exists;
+    public static boolean deviceListExists;
 
     private DeviceManager() {
-        LOLLIPOP = Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP;
-        if(LOLLIPOP) {
+        LOLLIPOP = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+        if (LOLLIPOP) {
             mScanCallback = new ScanCallback() {
                 @Override
                 public void onScanResult(int callbackType, ScanResult result) {
                     super.onScanResult(callbackType, result);
                     BluetoothDevice btDevice = result.getDevice();
-                    if (btDevice != null){
+                    if (btDevice != null) {
                         //bleDeviceList.add(btDevice.getName());
                         Log.i("callbackType", String.valueOf(callbackType));
                         Log.i("result", result.toString());
@@ -84,27 +84,25 @@ public class DeviceManager {
                 }
             };
         } else {
-            mLeScanCallback = new BluetoothAdapter.LeScanCallback()
-            {
+            mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
                 @Override
-                public void onLeScan(final BluetoothDevice device, int rssi,byte[] scanRecord)
-                {
+                public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
 
-                discoveryList.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (device != null) {
-                            //bleDeviceList.add(device.getName());
-                            //Log.e("device", device.getName());
-                            discoveryList.add(device);
-                        }
+                    discoveryList.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (device != null) {
+                                //bleDeviceList.add(device.getName());
+                                //Log.e("device", device.getName());
+                                discoveryList.add(device);
+                            }
 
 //                    mLeDeviceListAdapter.addDevice(device);
 //
 //                    mLeDeviceListAdapter.notifyDataSetChanged();
 
-                    }
-                });
+                        }
+                    });
                 }
             };
         }
@@ -115,60 +113,68 @@ public class DeviceManager {
     }
 
     public static DeviceManager getInstance(Context c) {
-        if(deviceManager == null) {
+        if (deviceManager == null) {
             deviceManager = new DeviceManager();
         }
         mContext = c;
-        exists = true;
+        //exists = true;
         return deviceManager;
     }
 
     public boolean bleConnect() {
-        if(exists) {
-            //
-
-        } else {
-            if (!mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE))
-                return false;
-
-            final BluetoothManager bluetoothManager =
-                    (BluetoothManager) mContext.getSystemService(Context.BLUETOOTH_SERVICE);
-            mBluetoothAdapter = bluetoothManager.getAdapter();
-
-
-            //if it is enabled, why disable it?
-            if (mBluetoothAdapter.isEnabled()) {
-                Log.e("already enabled", ":?");
-                mBluetoothAdapter.disable();
-
-                while (mBluetoothAdapter.isEnabled()) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (Exception e) {
-                    }
-                }
-            }
-
-
-            //why check if mBluetoothAdapter is null?
-            if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                ((Activity) mContext).startActivityForResult(enableBtIntent, 100);
-
-                discoveryList = new DiscoveryList();
-                discoveryList.show(((FragmentActivity) mContext).getSupportFragmentManager(), discoveryListTag);
-                //startDiscovery();
-            }
-
-            mHandler = new Handler();
-
+//        if(exists) {
+//            //
+//
+//        } else {
+        if (!mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            return false;
         }
+
+        final BluetoothManager bluetoothManager =
+                (BluetoothManager) mContext.getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = bluetoothManager.getAdapter();
+
+
+        //if it is enabled, why disable it?
+//            if (mBluetoothAdapter.isEnabled()) {
+//                Log.e("already enabled", ":?");
+//                mBluetoothAdapter.disable();
+//
+        if (mBluetoothAdapter.isEnabled()) {
+            try {
+                Thread.sleep(100);
+            } catch (Exception e) {
+            }
+        }
+//            }
+
+
+        discoveryList = new DiscoveryList();
+        discoveryList.show(((FragmentActivity) mContext).getSupportFragmentManager(), discoveryListTag);
+        mHandler = new Handler();
+        deviceListExists = false;
+
+        //why check if mBluetoothAdapter is null?
+        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            ((Activity) mContext).startActivityForResult(enableBtIntent, 100);
+
+            //startDiscovery();
+        } else {
+            startDiscovery();
+        }
+
+
+        // }
 
         return true;
     }
 
     public void startDiscovery() {
-        ((Activity)mContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+        ((Activity) mContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+        while(!deviceListExists) {
+
+        }
         discoveryList.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -183,7 +189,7 @@ public class DeviceManager {
                     .build();
             filters = new ArrayList<ScanFilter>();
         }
-        if (discoveryList != null){
+        if (discoveryList != null) {
             scanLeDevice(mBluetoothAdapter.isEnabled());
         }
     }
@@ -191,20 +197,19 @@ public class DeviceManager {
     int timer = 0;
 
 
-
     private void scanLeDevice(boolean enabled) {
 
-        if(enabled) {
+        if (enabled) {
 
-            Log.e("started scanning","here");
-            if (mHandler == null){
+            Log.e("started scanning", "here");
+            if (mHandler == null) {
                 mHandler = new Handler();
             }
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if (LOLLIPOP) {
-                        if (mBLEScanner == null){
+                        if (mBLEScanner == null) {
                             mBLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
                         }
                         mBLEScanner.stopScan(mScanCallback);
@@ -216,8 +221,8 @@ public class DeviceManager {
                 }
             }, 30000);
 
-            if(LOLLIPOP) {
-                if (mBLEScanner == null){
+            if (LOLLIPOP) {
+                if (mBLEScanner == null) {
                     mBLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
                 }
                 mBLEScanner.startScan(filters, settings, mScanCallback);
@@ -225,9 +230,9 @@ public class DeviceManager {
                 mBluetoothAdapter.startLeScan(mLeScanCallback);
             }
         } else {
-            Log.e("not enabled","not enabled");
+            Log.e("not enabled", "not enabled");
             if (LOLLIPOP) {
-                if (mBLEScanner == null){
+                if (mBLEScanner == null) {
                     mBLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
                 }
                 mBLEScanner.stopScan(mScanCallback);
@@ -239,7 +244,7 @@ public class DeviceManager {
 
     public void establishConnection(BluetoothDevice bluetoothDevice) {
         if (LOLLIPOP) {
-            if (mBLEScanner == null){
+            if (mBLEScanner == null) {
                 mBLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
             }
             mBLEScanner.stopScan(mScanCallback);
@@ -248,7 +253,7 @@ public class DeviceManager {
         }
 
         BluetoothGatt bluetoothGatt = bluetoothDevice.connectGatt(mContext, false, bleGattCallback);
-        while(!bluetoothGatt.connect()) {
+        while (!bluetoothGatt.connect()) {
 
         }
         discoveryList.dismiss();
@@ -269,7 +274,7 @@ public class DeviceManager {
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             //super.onConnectionStateChange(gatt, status, newState);
             Log.i("inside", "onConnectionStateChange");
-            if (newState == BluetoothProfile.STATE_CONNECTED){
+            if (newState == BluetoothProfile.STATE_CONNECTED) {
                 //Toast.makeText(getActivity(), "phuck", Toast.LENGTH_SHORT).show();
                 Log.i("inside inside", "bluetooth profile state connected");
                 Log.i("inside inside inside", "" + gatt.discoverServices());
