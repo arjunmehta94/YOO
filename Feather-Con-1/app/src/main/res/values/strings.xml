@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Feather-Con-1</string>
+
+
+    <string name="ble_not_supported">\"BLE not supported\"</string>
+    <string name="ble_supported">\"BLE supported\"</string>
+    <string name="action_settings">Settings</string>
+</resources>
