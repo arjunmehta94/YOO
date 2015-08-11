@@ -33,22 +33,6 @@ public class MainActivity extends FragmentActivity implements DeviceListenerInte
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == 100) {
-            DialogFragment f = (DialogFragment) getSupportFragmentManager().findFragmentByTag("DiscoveryListTag");
-            if (resultCode == Activity.RESULT_OK) {
-                Log.e("clicked OK", "clicked OK");
-                if (f != null) {
-                    deviceManager.startDiscovery();
-                }
-            } else {
-                f.dismissAllowingStateLoss();
-            }
-        }
-    }
-
     long prevTime = 0;
     @Override
     public void handleDeviceInput(List<Coordinate> coordinates) {
@@ -61,4 +45,27 @@ public class MainActivity extends FragmentActivity implements DeviceListenerInte
         System.out.println("timeDiff: " + ((Long) currentTime - prevTime));
         prevTime = currentTime;
     }
+
+//    @Override
+//    public void onResume(){
+//        deviceManager.startDeviceManager();
+//        super.onResume();
+//    }
+//
+//    @Override
+//    public void onStart(){
+//        deviceManager.startDeviceManager();
+//        super.onStart();
+//    }
+//    @Override
+//    public void onPause(){
+//        deviceManager.endDeviceManager();
+//        super.onPause();
+//    }
+//
+//    @Override
+//    public void onStop(){
+//        deviceManager.endDeviceManager();
+//        super.onStop();
+//    }
 }

@@ -38,7 +38,6 @@ public class DiscoveryList extends DialogFragment {
 
     Button scanButton;
 
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         deviceManager = DeviceManager.getInstance();
@@ -72,6 +71,7 @@ public class DiscoveryList extends DialogFragment {
             }
         });
 
+        deviceManager.startDiscovery();
 
         //scanLeDevice(true);
 

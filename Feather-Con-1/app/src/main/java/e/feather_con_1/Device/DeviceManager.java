@@ -56,12 +56,17 @@ public class DeviceManager {
     private boolean scanning;
 
     private MessageBuffer<Coordinate> messageBuffer;
+    private boolean firstTime;
     //public static boolean deviceListExists;
 
     private DeviceManager() {
         scanning = false;
+        firstTime = true;
         mContext.registerReceiver(bluetoothReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
         LOLLIPOP = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+        if(false) {
+            endDeviceManager();
+        }
         if (LOLLIPOP) {
             mScanCallback = new ScanCallback() {
                 @Override
@@ -149,21 +154,18 @@ public class DeviceManager {
 //                mBluetoothAdapter.disable();
 //
         if (mBluetoothAdapter.isEnabled()) {
-            try {
-                Thread.sleep(100);
-            } catch (Exception e) {
-            }
+            discoveryList = new DiscoveryList();
+            discoveryList.show(((FragmentActivity) mContext).getSupportFragmentManager(), discoveryListTag);
+        } else {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            ((Activity) mContext).startActivity(enableBtIntent);
         }
-//            }
 
 
-        discoveryList = new DiscoveryList();
-        discoveryList.show(((FragmentActivity) mContext).getSupportFragmentManager(), discoveryListTag);
+
 
         //why check if mBluetoothAdapter is null?
         //if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
-        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        ((Activity) mContext).startActivityForResult(enableBtIntent, 100);
 
         //startDiscovery();
         //} else {
@@ -237,6 +239,7 @@ public class DeviceManager {
                 discoveryList.getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
             }
             scanning = false;
+            firstTime = false;
             Log.i("inside", "scanning stopped");
             discoveryList.getActivity().runOnUiThread(new Runnable() {
                 @Override
@@ -402,25 +405,42 @@ public class DeviceManager {
         public void onReceive(Context context, Intent intent) {
             if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(intent.getAction())) {
                 // if bluetooth is turned on again, should restart scanning
+                if(mBluetoothAdapter.isEnabled()) {
+                    if(((FragmentActivity) mContext).getSupportFragmentManager().findFragmentByTag(discoveryListTag)
+                            ==null) {
+                        discoveryList = new DiscoveryList();
+                        discoveryList.show(((FragmentActivity) mContext).getSupportFragmentManager(), discoveryListTag);
+                    }
+                } else {
+                    //
+                }
+
                 if (scanning && !mBluetoothAdapter.isEnabled()) {
                     Log.i("inside", "bluetooth turned off");
-//                    if (LOLLIPOP) {
-//                        if (mBLEScanner == null) {
-//                            mBLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
-//                        }
-//                        mBLEScanner.stopScan(mScanCallback);
-//                    } else {
-//                        mBluetoothAdapter.stopLeScan(mLeScanCallback);
-//                    }
                     StopScanThread thread = stopScanThreadWeakReference.get();
                     if(thread!=null) {
                         thread.wakeUpPlease();
                     }
                     discoveryList.dismissAllowingStateLoss();
-                } else {
-                    Log.i("inside", "bluetooth turned on");
+                    //discoveryList = null;
                 }
+//                    else if (!firstTime && !scanning && mBluetoothAdapter.isEnabled()) {
+//                    Log.i("inside", "bluetooth turned on");
+//                    //bleConnect();
+//                    if (discoveryList == null) {
+//                        discoveryList = new DiscoveryList();
+//                    }
+//                    discoveryList.show(((FragmentActivity) mContext).getSupportFragmentManager(), discoveryListTag);
+//                    //startDiscovery();
+//                }
             }
         }
     };
+
+    public void startDeviceManager(){
+        mContext.registerReceiver(bluetoothReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+    }
+    public void endDeviceManager() {
+        mContext.unregisterReceiver(bluetoothReceiver);
+    }
 }
