@@ -8,7 +8,6 @@ import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -65,20 +64,6 @@ public class DiscoveryList extends DialogFragment {
 
         //scanLeDevice(true);
 
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == 100) {
-            DialogFragment f = this;
-            if (resultCode == Activity.RESULT_OK) {
-                Log.e("clicked OK", "clicked OK");
-                deviceManager.startDiscovery();
-            } else {
-                f.dismissAllowingStateLoss();
-            }
-        }
     }
 
     public void add(BluetoothDevice device) {
