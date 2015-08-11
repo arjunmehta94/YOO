@@ -54,10 +54,9 @@ public class DeviceManager {
     private ScanCallback mScanCallback;
     private BluetoothAdapter.LeScanCallback mLeScanCallback;
 
-    private Handler mHandler;
     private boolean scanning;
 
-
+    private MessageBuffer<Coordinate> messageBuffer;
     //public static boolean deviceListExists;
 
     private DeviceManager() {
@@ -106,16 +105,16 @@ public class DeviceManager {
                                 discoveryList.add(device);
                             }
 
-//                    mLeDeviceListAdapter.addDevice(device);
+//                      mLeDeviceListAdapter.addDevice(device);
 //
-//                    mLeDeviceListAdapter.notifyDataSetChanged();
+//                      mLeDeviceListAdapter.notifyDataSetChanged();
 
                         }
                     });
                 }
             };
         }
-
+        messageBuffer = new MessageBuffer<Coordinate>();
     }
 
     public static DeviceManager getInstance() {
@@ -161,8 +160,6 @@ public class DeviceManager {
 
         discoveryList = new DiscoveryList();
         discoveryList.show(((FragmentActivity) mContext).getSupportFragmentManager(), discoveryListTag);
-        mHandler = new Handler();
-                //deviceListExists = false;
 
         //why check if mBluetoothAdapter is null?
         //if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
@@ -173,10 +170,7 @@ public class DeviceManager {
         //} else {
         //startDiscovery();
         //}
-
-
-        // }
-
+        //}
         return true;
     }
 
@@ -206,8 +200,6 @@ public class DeviceManager {
         }
     }
 
-    int timer = 0;
-
     boolean rotation = false;
 
     private class StopScanThread implements Runnable{
@@ -217,6 +209,7 @@ public class DeviceManager {
         public StopScanThread(){
             this.wakeUp = false;
         }
+
         @Override
         public void run() {
             synchronized (lock) {
@@ -385,12 +378,21 @@ public class DeviceManager {
 
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+
             byte[] val = characteristic.getValue();
-            System.out.println("x: " + val[0]);
-            System.out.println("y: " + val[1]);
-            System.out.println("penupdown: " + val[2]);
+            //System.out.println("x: " + val[0]);
+            //System.out.println("y: " + val[1]);
+            //System.out.println("penupdown: " + val[2]);
+            Coordinate coordinate = new Coordinate(val[0],val[1],val[2]);
+            messageBuffer.enQueue(coordinate);
         }
     };
+
+    public void setDeviceListenerInterface(DeviceListenerInterface deviceListenerInterface) {
+        Log.e("DeviceListenerInterface","is set");
+        Thread readQueueThread = new Thread(new ReadQueueThread(messageBuffer, deviceListenerInterface));
+        readQueueThread.start();
+    }
 
     private final BroadcastReceiver bluetoothReceiver = new BroadcastReceiver() {
         @Override
@@ -407,16 +409,12 @@ public class DeviceManager {
 //                    } else {
 //                        mBluetoothAdapter.stopLeScan(mLeScanCallback);
 //                    }
-
                     stopScanThread.wakeUpPlease();
                     discoveryList.dismissAllowingStateLoss();
-
                 } else {
                     Log.i("inside", "bluetooth turned on");
                 }
             }
-
         }
-
     };
 }
