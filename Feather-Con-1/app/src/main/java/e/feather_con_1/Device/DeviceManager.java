@@ -22,12 +22,11 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -260,7 +259,7 @@ public class DeviceManager {
     public void scanButtonPressed(){
         discoveryList.dismissAllowingStateLoss();
     }
-    public StopScanThread stopScanThread = new StopScanThread();
+    public WeakReference<StopScanThread> stopScanThreadWeakReference;
 
     private void scanLeDevice(boolean enabled) {
         scanning = enabled;
@@ -271,6 +270,8 @@ public class DeviceManager {
 //                mHandler = new Handler();
 //            }
 //            mHandler.postDelayed(stopScan, 30000);
+            StopScanThread stopScanThread = new StopScanThread();
+            stopScanThreadWeakReference = new WeakReference<>(stopScanThread);
             new Thread(stopScanThread).start();
             if (LOLLIPOP) {
                 if (mBLEScanner == null) {
@@ -303,8 +304,10 @@ public class DeviceManager {
 //        } else {
 //            mBluetoothAdapter.stopLeScan(mLeScanCallback);
 //        }
-
-        stopScanThread.wakeUpPlease();
+        StopScanThread thread = stopScanThreadWeakReference.get();
+        if(thread!=null) {
+            thread.wakeUpPlease();
+        }
         BluetoothGatt bluetoothGatt = bluetoothDevice.connectGatt(mContext, false, bleGattCallback);
         while (!bluetoothGatt.connect()) {
 
@@ -374,7 +377,7 @@ public class DeviceManager {
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             //super.onCharacteristicWrite(gatt, characteristic, status);
-        }
+         }
 
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
@@ -409,7 +412,10 @@ public class DeviceManager {
 //                    } else {
 //                        mBluetoothAdapter.stopLeScan(mLeScanCallback);
 //                    }
-                    stopScanThread.wakeUpPlease();
+                    StopScanThread thread = stopScanThreadWeakReference.get();
+                    if(thread!=null) {
+                        thread.wakeUpPlease();
+                    }
                     discoveryList.dismissAllowingStateLoss();
                 } else {
                     Log.i("inside", "bluetooth turned on");
