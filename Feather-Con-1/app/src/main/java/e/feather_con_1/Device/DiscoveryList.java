@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -36,6 +37,7 @@ public class DiscoveryList extends DialogFragment {
     ListView deviceListView;
     ListAdapterCustom adapterCustom;
 
+    Button scanButton;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +63,15 @@ public class DiscoveryList extends DialogFragment {
         //deviceManager.deviceListExists = true;
 
         this.getView().setVisibility(View.GONE);
+
+        scanButton = (Button) getView().findViewById(R.id.scanButton);
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deviceManager.scanButtonPressed();
+                deviceManager.bleConnect();
+            }
+        });
 
 
         //scanLeDevice(true);

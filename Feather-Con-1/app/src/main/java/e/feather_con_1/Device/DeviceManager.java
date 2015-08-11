@@ -26,10 +26,13 @@ import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import e.feather_con_1.R;
 
 /**
  * Created by anurag on 6/8/15.
@@ -53,6 +56,8 @@ public class DeviceManager {
 
     private Handler mHandler;
     private boolean scanning;
+
+
     //public static boolean deviceListExists;
 
     private DeviceManager() {
@@ -110,6 +115,7 @@ public class DeviceManager {
                 }
             };
         }
+
     }
 
     public static DeviceManager getInstance() {
@@ -156,7 +162,7 @@ public class DeviceManager {
         discoveryList = new DiscoveryList();
         discoveryList.show(((FragmentActivity) mContext).getSupportFragmentManager(), discoveryListTag);
         mHandler = new Handler();
-        //deviceListExists = false;
+                //deviceListExists = false;
 
         //why check if mBluetoothAdapter is null?
         //if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
@@ -187,6 +193,7 @@ public class DeviceManager {
                 discoveryList.getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
             }
         });
+        discoveryList.getDialog().setCanceledOnTouchOutside(false);
         if (LOLLIPOP) {//API>21
             mBLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
             settings = new ScanSettings.Builder()
@@ -238,6 +245,15 @@ public class DeviceManager {
                 discoveryList.getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
             }
             scanning = false;
+            Log.i("inside", "scanning stopped");
+            discoveryList.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    discoveryList.getView().findViewById(R.id.progressBar).setVisibility(View.GONE);
+                    discoveryList.getView().findViewById(R.id.scanButton).setVisibility(View.VISIBLE);
+                }
+            });
+
         }
 
         public void wakeUpPlease(){
@@ -248,6 +264,9 @@ public class DeviceManager {
         }
     }
 
+    public void scanButtonPressed(){
+        discoveryList.dismissAllowingStateLoss();
+    }
     public StopScanThread stopScanThread = new StopScanThread();
 
     private void scanLeDevice(boolean enabled) {
@@ -259,7 +278,7 @@ public class DeviceManager {
 //                mHandler = new Handler();
 //            }
 //            mHandler.postDelayed(stopScan, 30000);
-            //new Thread(stopScanThread).start();
+            new Thread(stopScanThread).start();
             if (LOLLIPOP) {
                 if (mBLEScanner == null) {
                     mBLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
@@ -280,7 +299,6 @@ public class DeviceManager {
             }
         }
     }
-
 
     public void establishConnection(BluetoothDevice bluetoothDevice) {
         scanning = false;
@@ -401,6 +419,4 @@ public class DeviceManager {
         }
 
     };
-
-
 }
