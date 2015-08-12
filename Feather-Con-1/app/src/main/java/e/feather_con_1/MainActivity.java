@@ -1,12 +1,7 @@
 package e.feather_con_1;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.util.List;
@@ -14,9 +9,10 @@ import java.util.List;
 import e.feather_con_1.Device.Coordinate;
 import e.feather_con_1.Device.DeviceListenerInterface;
 import e.feather_con_1.Device.DeviceManager;
+import e.feather_con_1.Device.DeviceManager1;
 
 public class MainActivity extends FragmentActivity implements DeviceListenerInterface{
-    private DeviceManager deviceManager;
+    private DeviceManager1 deviceManager1;
     private boolean mReturningWithResult;
     private int mResultCode;
     private int mRequestCode;
@@ -24,11 +20,10 @@ public class MainActivity extends FragmentActivity implements DeviceListenerInte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        deviceManager1 = DeviceManager1.getInstance(this);//pass context
+        deviceManager1.setDeviceListenerInterface(this);
 
-        deviceManager = DeviceManager.getInstance(this);//pass context
-        deviceManager.setDeviceListenerInterface(this);
-
-        if(!deviceManager.bleConnect()) {
+        if(!deviceManager1.bleConnect()) {
             Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
         }
     }
@@ -48,24 +43,24 @@ public class MainActivity extends FragmentActivity implements DeviceListenerInte
 
 //    @Override
 //    public void onResume(){
-//        deviceManager.startDeviceManager();
+//        deviceManager1.startDeviceManager();
 //        super.onResume();
 //    }
 //
 //    @Override
 //    public void onStart(){
-//        deviceManager.startDeviceManager();
+//        deviceManager1.startDeviceManager();
 //        super.onStart();
 //    }
 //    @Override
 //    public void onPause(){
-//        deviceManager.endDeviceManager();
+//        deviceManager1.endDeviceManager();
 //        super.onPause();
 //    }
 //
 //    @Override
 //    public void onStop(){
-//        deviceManager.endDeviceManager();
+//        deviceManager1.endDeviceManager();
 //        super.onStop();
 //    }
 }

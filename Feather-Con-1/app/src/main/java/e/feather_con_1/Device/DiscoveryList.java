@@ -1,14 +1,8 @@
 package e.feather_con_1.Device;
 
 import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
-import android.bluetooth.le.BluetoothLeScanner;
-import android.bluetooth.le.ScanFilter;
-import android.bluetooth.le.ScanSettings;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -21,7 +15,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,7 +24,7 @@ import e.feather_con_1.R;
  * Created by anurag on 7/8/15.
  */
 public class DiscoveryList extends DialogFragment {
-    DeviceManager deviceManager;
+    DeviceManager1 deviceManager1;
 
     ListView deviceListView;
     ListAdapterCustom adapterCustom;
@@ -40,7 +33,7 @@ public class DiscoveryList extends DialogFragment {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        deviceManager = DeviceManager.getInstance();
+        deviceManager1 = DeviceManager1.getInstance(getActivity());
         setStyle(DialogFragment.STYLE_NORMAL, R.style.Theme_CustomDialog);
     }
 
@@ -58,7 +51,7 @@ public class DiscoveryList extends DialogFragment {
             adapterCustom = new ListAdapterCustom(getActivity());
         }
         deviceListView.setAdapter(adapterCustom);
-        //deviceManager.deviceListExists = true;
+        //deviceManager1.deviceListExists = true;
 
         this.getView().setVisibility(View.GONE);
 
@@ -66,12 +59,12 @@ public class DiscoveryList extends DialogFragment {
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                deviceManager.scanButtonPressed();
-                deviceManager.bleConnect();
+                deviceManager1.scanButtonPressed();
+                deviceManager1.bleConnect();
             }
         });
 
-        deviceManager.startDiscovery();
+        deviceManager1.startDiscovery();
 
         //scanLeDevice(true);
 
@@ -138,7 +131,7 @@ public class DiscoveryList extends DialogFragment {
                 @Override
                 public void onClick(View v) {
                     Log.e("clicked","here");
-                    deviceManager.establishConnection(curr_device);
+                    deviceManager1.establishConnection(curr_device);
                 }
             });
             return  v;
