@@ -44,7 +44,7 @@ public class DeviceConnectActivity extends Activity {
         public void onReceive(Context context, Intent intent) {
             if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(intent.getAction())) {
                 if (mBluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
-                    startScan();
+                    initialiseViewAndStartScan();
                 } else if (mBluetoothAdapter.getState() == BluetoothAdapter.STATE_TURNING_OFF) {
                     return_fail();
                 }
@@ -55,7 +55,7 @@ public class DeviceConnectActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(savedInstanceState!=null) {
+        if (savedInstanceState != null) {
             finish();
         }
         allow_to_auto_connect = getIntent().getBooleanExtra(ARG_ALLOW_TO_AUTO_CONNECT, true);
@@ -75,11 +75,11 @@ public class DeviceConnectActivity extends Activity {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             this.startActivityForResult(enableBtIntent, REQUEST_BLUETOOTH_CODE);
         } else {
-            startScan();
+            initialiseViewAndStartScan();
         }
     }
 
-    private void startScan() {
+    private void initialiseViewAndStartScan() {
         number_of_times_startScan_is_called++;
         if (BuildConfig.DEBUG && number_of_times_startScan_is_called != 1) {
             throw new AssertionError();
@@ -87,12 +87,11 @@ public class DeviceConnectActivity extends Activity {
         setContentView(R.layout.activity_device_connect);
         adapterCustom = new ListAdapterCustom(this);
         ((ListView) findViewById(R.id.list)).setAdapter(adapterCustom);
-
-        scanLeDevice();
+        startScan();
     }
 
     public void rescanClicked(View view) {
-        //todo
+        startScan();
     }
 
     public void listItemClicked(BluetoothDevice device) {
@@ -135,7 +134,8 @@ public class DeviceConnectActivity extends Activity {
         super.onDestroy();
     }
 
-    private void scanLeDevice() {
+    private void startScan() {
+        show_progressbar();
         Log.e("started scanning", "here");
         if (IS_LOLLIPOP_OR_ABOVE) {
             if (mScanCallback == null) {
@@ -171,10 +171,6 @@ public class DeviceConnectActivity extends Activity {
             super.onScanResult(callbackType, result);
             BluetoothDevice btDevice = result.getDevice();
             if (btDevice != null) {
-                //bleDeviceList.add(btDevice.getName());
-                Log.i("inside callbackType", String.valueOf(callbackType));
-                Log.i("inside result", result.toString());
-                Log.i("inside", "device added");
                 activity.adapterCustom.add(btDevice);
             }
         }
@@ -211,6 +207,7 @@ public class DeviceConnectActivity extends Activity {
         private final Object lock = new Object();
         private DeviceConnectActivity activity;
         private boolean wakeUp;
+        private static final long SCAN_PERIOD = 5000;  //todo: change to 30,000;
 
         public StopScanThread(DeviceConnectActivity activity) {
             this.wakeUp = false;
@@ -219,15 +216,17 @@ public class DeviceConnectActivity extends Activity {
 
         @Override
         public void run() {
+            boolean natural_wakeup;
             synchronized (lock) {
                 long startTime = System.currentTimeMillis();
                 while (true) {
                     try {
-                        lock.wait(30000);
+                        lock.wait(SCAN_PERIOD);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    if (wakeUp || (System.currentTimeMillis() - startTime) >= 30000) {
+                    natural_wakeup = (System.currentTimeMillis() - startTime) >= SCAN_PERIOD;
+                    if (wakeUp || natural_wakeup) {
                         break;
                     }
                 }
@@ -237,6 +236,16 @@ public class DeviceConnectActivity extends Activity {
             } else {
                 activity.mBluetoothAdapter.stopLeScan(activity.mLeScanCallback);
             }
+            if (natural_wakeup) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(!activity.isDestroyed() && !activity.isFinishing()) {
+                            activity.show_rescan_button();
+                        }
+                    }
+                });
+            }
         }
 
         public void wakeUpPlease() {
@@ -245,6 +254,16 @@ public class DeviceConnectActivity extends Activity {
                 lock.notifyAll();
             }
         }
+    }
+
+    private void show_rescan_button() {
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
+        findViewById(R.id.scanButton).setVisibility(View.VISIBLE);
+    }
+
+    private void show_progressbar() {
+        findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+        findViewById(R.id.scanButton).setVisibility(View.GONE);
     }
 
     /*public void establishConnection(BluetoothDevice bluetoothDevice) {
