@@ -15,6 +15,7 @@ public class DeviceManager {
     Activity activity;
     private static DeviceManager deviceManagerInstance;
     private BluetoothAdapter mBluetoothAdapter;
+    public static final String CONNECT_RESULT = "connect_result";
 
 
     private DeviceManager(Activity activity) throws BluetoothNotSupportedException {
@@ -28,6 +29,9 @@ public class DeviceManager {
         }
     } 
 
+    public BluetoothAdapter getBluetoothAdapter(){
+        return mBluetoothAdapter;
+    }
     public static DeviceManager getInstance(Activity activity) throws BluetoothNotSupportedException {
         if(deviceManagerInstance==null) {
             deviceManagerInstance = new DeviceManager(activity);
@@ -39,6 +43,11 @@ public class DeviceManager {
         Intent intent = new Intent(activity, DeviceConnectActivity.class);
         intent.putExtra(DeviceConnectActivity.ARG_ALLOW_TO_AUTO_CONNECT, allowAutoConnect);
         activity.startActivityForResult(intent, REQUEST_CODE);
+    }
+
+    public void onDestroy() {
+        //todo..
+        deviceManagerInstance = null;
     }
 
     public static class BluetoothNotSupportedException extends Exception {}

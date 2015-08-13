@@ -23,6 +23,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         try {
             deviceManager = DeviceManager.getInstance(this);
         } catch (DeviceManager.BluetoothNotSupportedException e) {
@@ -39,7 +40,12 @@ public class MainActivity extends Activity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode==REQUEST_CODE) {
             if(resultCode == Activity.RESULT_OK) {
-                //todo..
+                boolean success = data.getBooleanExtra(DeviceManager.CONNECT_RESULT, false);
+                if(!success) {
+                    Toast.makeText(this, "no device is connected", Toast.LENGTH_SHORT).show();
+                } else {
+                    //todo..
+                }
             }
         }
     }
@@ -48,6 +54,12 @@ public class MainActivity extends Activity {
         if(deviceManager!=null) {
             deviceManager.startConnectionProcedure(false, REQUEST_CODE);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        deviceManager.onDestroy();
+        super.onDestroy();
     }
 
 
