@@ -273,7 +273,7 @@ public class DeviceConnectActivity extends Activity {
     public void establishConnection(BluetoothDevice bluetoothDevice) {
         deviceManager.imminentConnectDevice(bluetoothDevice);
         Intent intent = new Intent();
-        intent.putExtra(DeviceManager.CONNECT_RESULT, true);
+        intent.putExtra(e.feather_con_1.device.DeviceManager.CONNECT_RESULT, true);
         this.setResult(Activity.RESULT_OK, intent);
         finish();
     }
