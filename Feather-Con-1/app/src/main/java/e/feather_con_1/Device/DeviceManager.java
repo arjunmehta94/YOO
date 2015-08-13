@@ -2,6 +2,7 @@ package e.feather_con_1.device;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -33,6 +34,7 @@ public class DeviceManager {
     public static final String CONNECT_RESULT = "connect_result";
     private boolean isConnected = false;    //todo: when connected, make this true and false otherwise
     private static final String SAVED_INSTANCE_IS_CONNECTED = "is_connected";
+    BluetoothDevice bluetoothDevice;
 
     private boolean IS_LOLLIPOP_OR_ABOVE = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     private BluetoothLeScanner mBLEScanner;
@@ -86,5 +88,9 @@ public class DeviceManager {
 
     public void onRestoreInstanceState(Bundle in) {
         isConnected = in.getBoolean(SAVED_INSTANCE_IS_CONNECTED);
+    }
+
+    public void imminentConnectDevice(BluetoothDevice device) {
+        this.bluetoothDevice = device;
     }
 }

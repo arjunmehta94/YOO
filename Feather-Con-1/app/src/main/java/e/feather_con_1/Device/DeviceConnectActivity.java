@@ -94,10 +94,6 @@ public class DeviceConnectActivity extends Activity {
         startScan();
     }
 
-    public void listItemClicked(BluetoothDevice device) {
-        //todo
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_BLUETOOTH_CODE) {
@@ -117,6 +113,11 @@ public class DeviceConnectActivity extends Activity {
     @Override
     public void onDestroy() {
         unregisterReceiver(bluetoothReceiver);
+        joinWithStopScanningThread();
+        super.onDestroy();
+    }
+
+    private void joinWithStopScanningThread() {
         if (stopScanRunnableWeakReference != null && stopScanThreadWeakReference != null) {
             StopScanThread runnable = stopScanRunnableWeakReference.get();
             if (runnable != null) {
@@ -131,7 +132,6 @@ public class DeviceConnectActivity extends Activity {
                 }
             }
         }
-        super.onDestroy();
     }
 
     private void startScan() {
@@ -240,7 +240,7 @@ public class DeviceConnectActivity extends Activity {
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(!activity.isDestroyed() && !activity.isFinishing()) {
+                        if (!activity.isDestroyed() && !activity.isFinishing()) {
                             activity.show_rescan_button();
                         }
                     }
@@ -266,13 +266,15 @@ public class DeviceConnectActivity extends Activity {
         findViewById(R.id.scanButton).setVisibility(View.GONE);
     }
 
-    /*public void establishConnection(BluetoothDevice bluetoothDevice) {
-        if(stopScanRunnableWeakReference!=null) {
-            StopScanThread thread = stopScanRunnableWeakReference.get();
-            if (thread != null) {
-                thread.wakeUpPlease();
-            }
-        }
-        BluetoothGatt bluetoothGatt = bluetoothDevice.connectGatt(this, false, deviceManager.bleGattCallback);
-    }*/
+    public void listItemClicked(BluetoothDevice device) {
+        establishConnection(device);
+    }
+
+    public void establishConnection(BluetoothDevice bluetoothDevice) {
+        deviceManager.imminentConnectDevice(bluetoothDevice);
+        Intent intent = new Intent();
+        intent.putExtra(DeviceManager.CONNECT_RESULT, true);
+        this.setResult(Activity.RESULT_OK, intent);
+        finish();
+    }
 }
