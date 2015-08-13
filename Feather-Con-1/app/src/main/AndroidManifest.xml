@@ -22,7 +22,8 @@
         <activity
             android:name=".device.DeviceConnectActivity"
             android:label="@string/title_activity_device_connect"
-            android:theme="@style/Theme.CustomDialog">
+            android:theme="@style/Theme.CustomDialog"
+            android:screenOrientation="locked">
         </activity>
     </application>
 

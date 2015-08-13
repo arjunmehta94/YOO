@@ -25,7 +25,7 @@ public class ListAdapterCustom extends BaseAdapter {
         this.activity = activity;
     }
 
-    public boolean add(BluetoothDevice device) {
+    public synchronized boolean add(BluetoothDevice device) {
         boolean success = !contains(device) && deviceList.add(device);
         if (success) {
             this.notifyDataSetChanged();
@@ -33,32 +33,32 @@ public class ListAdapterCustom extends BaseAdapter {
         return success;
     }
 
-    public void remove(BluetoothDevice device) {
+    public synchronized void remove(BluetoothDevice device) {
         deviceList.remove(device);
     }
 
-    public boolean contains(BluetoothDevice device) {
+    public synchronized boolean contains(BluetoothDevice device) {
         return deviceList.contains(device);
     }
 
     @Override
-    public int getCount() {
+    public synchronized int getCount() {
         return deviceList.size();
     }
 
     @Override
-    public BluetoothDevice getItem(int position) {
+    public synchronized BluetoothDevice getItem(int position) {
         return deviceList.get(position);
     }
 
     @Override
-    public long getItemId(int position) {
+    public synchronized long getItemId(int position) {
         return position;
     }
 
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public synchronized View getView(int position, View convertView, ViewGroup parent) {
         final BluetoothDevice curr_device = getItem(position);
         View v = convertView;
         if (v == null) {

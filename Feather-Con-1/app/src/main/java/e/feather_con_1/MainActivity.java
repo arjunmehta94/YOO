@@ -3,17 +3,11 @@ package e.feather_con_1;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import java.util.List;
-
-import e.feather_con_1.device.Coordinate;
-import e.feather_con_1.device.DeviceListenerInterface;
 import e.feather_con_1.device.DeviceManager;
-import e.feather_con_1.device.DeviceManager1;
 
 public class MainActivity extends Activity {
 
@@ -35,6 +29,21 @@ public class MainActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if(deviceManager!=null) {
+            deviceManager.onSavedInstanceState(outState);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle inState) {
+        super.onRestoreInstanceState(inState);
+        if(deviceManager!=null) {
+            deviceManager.onRestoreInstanceState(inState);
+        }
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
