@@ -1,4 +1,4 @@
-package e.feather_con_1.Device;
+package e.feather_con_1.device;
 
 /**
  * Created by anurag on 8/8/15.

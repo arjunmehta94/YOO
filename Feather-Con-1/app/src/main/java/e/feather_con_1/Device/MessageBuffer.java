@@ -1,7 +1,4 @@
-package e.feather_con_1.Device;
-
-import android.support.annotation.NonNull;
-import android.util.Log;
+package e.feather_con_1.device;
 
 import java.util.LinkedList;
 import java.util.List;

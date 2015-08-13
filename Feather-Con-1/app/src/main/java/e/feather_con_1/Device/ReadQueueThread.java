@@ -1,4 +1,4 @@
-package e.feather_con_1.Device;
+package e.feather_con_1.device;
 
 import android.util.Log;
 

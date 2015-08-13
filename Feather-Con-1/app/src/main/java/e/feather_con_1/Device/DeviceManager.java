@@ -1,4 +1,4 @@
-package e.feather_con_1.Device;
+package e.feather_con_1.device;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -6,35 +6,40 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.widget.ListView;
 
 /**
  * Created by arjunmehta94 on 8/12/15.
  */
 public class DeviceManager {
-    Context context;
+    Activity activity;
     private static DeviceManager deviceManagerInstance;
     private BluetoothAdapter mBluetoothAdapter;
 
-    private DeviceManager(Context context, int REQUEST_CODE) throws UnsupportedOperationException {
-        this.context = context;
+
+    private DeviceManager(Activity activity) throws BluetoothNotSupportedException {
+        this.activity = activity;
         final BluetoothManager bluetoothManager =
-                (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
+                (BluetoothManager) activity.getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
         if (mBluetoothAdapter == null ||
-                !context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            throw new UnsupportedOperationException();
+                !activity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            throw new BluetoothNotSupportedException();
         }
     } 
 
-    public static DeviceManager getInstance(Context context) throws UnsupportedOperationException {
+    public static DeviceManager getInstance(Activity activity) throws BluetoothNotSupportedException {
         if(deviceManagerInstance==null) {
-            int code = 0; //random just delete
-            deviceManagerInstance = new DeviceManager(context, code);
+            deviceManagerInstance = new DeviceManager(activity);
         }
         return deviceManagerInstance;
     }
 
-    public void startConnectionProcedure(boolean allowAutoConnect) {
-
+    public void startConnectionProcedure(boolean allowAutoConnect, int REQUEST_CODE) {
+        Intent intent = new Intent(activity, DeviceConnectActivity.class);
+        intent.putExtra(DeviceConnectActivity.ARG_ALLOW_TO_AUTO_CONNECT, allowAutoConnect);
+        activity.startActivityForResult(intent, REQUEST_CODE);
     }
+
+    public static class BluetoothNotSupportedException extends Exception {}
 }

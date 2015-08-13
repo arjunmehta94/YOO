@@ -1,66 +1,55 @@
 package e.feather_con_1;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import java.util.List;
 
-import e.feather_con_1.Device.Coordinate;
-import e.feather_con_1.Device.DeviceListenerInterface;
-import e.feather_con_1.Device.DeviceManager;
-import e.feather_con_1.Device.DeviceManager1;
+import e.feather_con_1.device.Coordinate;
+import e.feather_con_1.device.DeviceListenerInterface;
+import e.feather_con_1.device.DeviceManager;
+import e.feather_con_1.device.DeviceManager1;
 
-public class MainActivity extends FragmentActivity implements DeviceListenerInterface{
-    private DeviceManager1 deviceManager1;
-    private boolean mReturningWithResult;
-    private int mResultCode;
-    private int mRequestCode;
+public class MainActivity extends Activity {
+
+    private static final int REQUEST_CODE = 1;
+    DeviceManager deviceManager = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        deviceManager1 = DeviceManager1.getInstance(this);//pass context
-        deviceManager1.setDeviceListenerInterface(this);
-
-        if(!deviceManager1.bleConnect()) {
-            Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
+        try {
+            deviceManager = DeviceManager.getInstance(this);
+        } catch (DeviceManager.BluetoothNotSupportedException e) {
+            e.printStackTrace();
+            Log.e("inside", "bluetooth not supported");
+        }
+        if(deviceManager!=null) {
+            deviceManager.startConnectionProcedure(true, REQUEST_CODE);
         }
     }
 
-    long prevTime = 0;
+
     @Override
-    public void handleDeviceInput(List<Coordinate> coordinates) {
-        //todo
-        for(Coordinate coordinate : coordinates) {
-            System.out.println(coordinate.toString());
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode==REQUEST_CODE) {
+            if(resultCode == Activity.RESULT_OK) {
+                //todo..
+            }
         }
-        long currentTime = System.currentTimeMillis();
-
-        System.out.println("timeDiff: " + ((Long) currentTime - prevTime));
-        prevTime = currentTime;
     }
 
-//    @Override
-//    public void onResume(){
-//        deviceManager1.startDeviceManager();
-//        super.onResume();
-//    }
-//
-//    @Override
-//    public void onStart(){
-//        deviceManager1.startDeviceManager();
-//        super.onStart();
-//    }
-//    @Override
-//    public void onPause(){
-//        deviceManager1.endDeviceManager();
-//        super.onPause();
-//    }
-//
-//    @Override
-//    public void onStop(){
-//        deviceManager1.endDeviceManager();
-//        super.onStop();
-//    }
+    public void connectToDevice(View view) {
+        if(deviceManager!=null) {
+            deviceManager.startConnectionProcedure(false, REQUEST_CODE);
+        }
+    }
+
+
+    //todo: what happens when you are already connected to a device and you press connect or auto connect is started????
 }
