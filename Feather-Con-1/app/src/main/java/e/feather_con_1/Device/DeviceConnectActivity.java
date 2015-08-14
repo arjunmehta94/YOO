@@ -36,7 +36,6 @@ public class DeviceConnectActivity extends Activity {
     private BluetoothAdapter.LeScanCallback mLeScanCallback;
     public WeakReference<StopScanRunnable> stopScanRunnableWeakReference;
     public WeakReference<Thread> stopScanThreadWeakReference;
-    WaitableThreadManager threadManager;
 
     private int number_of_times_startScan_is_called = 0;    //todo:remove ultimately
 
@@ -60,7 +59,6 @@ public class DeviceConnectActivity extends Activity {
             finish();
         }
         allow_to_auto_connect = getIntent().getBooleanExtra(ARG_ALLOW_TO_AUTO_CONNECT, true);
-        threadManager = new WaitableThreadManager();
         try {
             deviceManager = DeviceManager.getInstance(this);
             mBluetoothAdapter = deviceManager.getBluetoothAdapter();
@@ -116,7 +114,6 @@ public class DeviceConnectActivity extends Activity {
     public void onDestroy() {
         unregisterReceiver(bluetoothReceiver);
         joinWithStopScanningThread();
-        threadManager.wait_for_threads_to_finish();
         super.onDestroy();
     }
 
@@ -153,9 +150,9 @@ public class DeviceConnectActivity extends Activity {
             mBluetoothAdapter.startLeScan(mLeScanCallback);
         }
 
-        StopScanRunnable stopScanRunnable = new StopScanRunnable(this);
-        stopScanRunnableWeakReference = new WeakReference<>(stopScanRunnable);
-        Thread thread = new Thread(stopScanRunnable);
+        StopScanRunnable stopScanThread = new StopScanRunnable(this);
+        stopScanRunnableWeakReference = new WeakReference<>(stopScanThread);
+        Thread thread = new Thread(stopScanThread);
         stopScanThreadWeakReference = new WeakReference<>(thread);
         thread.start();
 
@@ -195,11 +192,13 @@ public class DeviceConnectActivity extends Activity {
 
         @Override
         public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-            activity.runOnUiThread(new WaitableRunnable(activity.threadManager) {
+            activity.runOnUiThread(new Runnable() {
                 @Override
-                protected void doJob() {
-                    if (device != null) {
-                        activity.adapterCustom.add(device);
+                public void run() {
+                    if (!activity.isDestroyed() && !activity.isFinishing()) {
+                        if (device != null) {
+                            activity.adapterCustom.add(device);
+                        }
                     }
                 }
             });
@@ -240,9 +239,9 @@ public class DeviceConnectActivity extends Activity {
                 activity.mBluetoothAdapter.stopLeScan(activity.mLeScanCallback);
             }
             if (natural_wakeup) {
-                activity.runOnUiThread(new WaitableRunnable(activity.threadManager) {
+                activity.runOnUiThread(new Runnable() {
                     @Override
-                    protected void doJob() {
+                    public void run() {
                         if (!activity.isDestroyed() && !activity.isFinishing()) {
                             activity.show_rescan_button();
                         }
