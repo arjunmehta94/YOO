@@ -7,9 +7,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import e.feather_con_1.device.DeviceListenerInterface;
 import e.feather_con_1.device.DeviceManager;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements DeviceListenerInterface{
 
     private static final int REQUEST_CODE = 1;
     DeviceManager deviceManager = null;
@@ -19,13 +20,16 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         try {
-            deviceManager = DeviceManager.getInstance(this);
+            deviceManager = DeviceManager.getInstance(this, this);
         } catch (DeviceManager.BluetoothNotSupportedException e) {
             e.printStackTrace();
             Log.e("inside", "bluetooth not supported");
         }
         if(deviceManager!=null) {
-            deviceManager.startConnectionProcedure(true, REQUEST_CODE);
+            if(savedInstanceState!=null) {
+                deviceManager.onRestoreInstanceState(savedInstanceState);
+            }
+            deviceManager.autoScanOrReconnect(REQUEST_CODE);
         }
     }
 
@@ -38,14 +42,6 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle inState) {
-        super.onRestoreInstanceState(inState);
-        if(deviceManager!=null) {
-            deviceManager.onRestoreInstanceState(inState);
-        }
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode==REQUEST_CODE) {
             if(resultCode == Activity.RESULT_OK) {
@@ -53,7 +49,8 @@ public class MainActivity extends Activity {
                 if(!success) {
                     Toast.makeText(this, "no device is connected", Toast.LENGTH_SHORT).show();
                 } else {
-                    //todo..
+                    String mac_address = data.getStringExtra(DeviceManager.CONNECT_MAC_ADDRESS);
+                    deviceManager.establishNewConnection(mac_address);
                 }
             }
         }
@@ -71,6 +68,31 @@ public class MainActivity extends Activity {
         super.onDestroy();
     }
 
+    @Override
+    public void device_connected(boolean connected_to_old_device) {
+        if(!connected_to_old_device) {
+            this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(MainActivity.this, "connected!!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
 
-    //todo: what happens when you are already connected to a device and you press connect or auto connect is started????
+    @Override
+    public void device_disconnected() {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, "not connected!!!!!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void disconnect(View view) {
+        if(deviceManager!=null) {
+            deviceManager.disconnectDevice();
+        }
+    }
 }

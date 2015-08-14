@@ -6,5 +6,6 @@ import java.util.List;
  * Created by anurag on 10/8/15.
  */
 public interface DeviceListenerInterface {
-    void handleDeviceInput(List<Coordinate> coordinates);
+    void device_connected(boolean connected_to_old_device);
+    void device_disconnected();
 }

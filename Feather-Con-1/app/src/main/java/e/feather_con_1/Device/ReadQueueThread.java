@@ -26,7 +26,7 @@ public class ReadQueueThread implements Runnable{
                     } catch (InterruptedException ignored) {}
                 }
                 //Log.e("run","message buffer changed");
-                deviceListenerInterface.handleDeviceInput(messageBuffer.deQueueAll());
+                //deviceListenerInterface.handleDeviceInput(messageBuffer.deQueueAll());
                 messageBuffer.resetIsChanged();
             }
         }
