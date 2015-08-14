@@ -275,6 +275,7 @@ public class DeviceConnectActivity extends Activity {
     }
 
     public void listItemClicked(BluetoothDevice device) {
+        //todo: check if device is still in range
         establishConnection(device);
     }
 
