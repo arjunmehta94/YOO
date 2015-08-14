@@ -136,8 +136,10 @@ public class DeviceConnectActivity extends Activity {
 
     private void startScan() {
         ListView list = (ListView) findViewById(R.id.list);
-        if (!allow_to_auto_connect && list.getAdapter() == null) {
-            list.setAdapter(adapterCustom);
+        if (!allow_to_auto_connect) {
+            if (list.getAdapter() == null) {
+                list.setAdapter(adapterCustom);
+            }
         } else {
             list.setAdapter(null);
         }
@@ -177,7 +179,7 @@ public class DeviceConnectActivity extends Activity {
             super.onScanResult(callbackType, result);
             BluetoothDevice btDevice = result.getDevice();
             if (btDevice != null && btDevice.getName() != null &&
-                    btDevice.getName().compareTo("")!=0) {
+                    btDevice.getName().compareTo("") != 0) {
                 activity.adapterCustom.add(btDevice);
             }
         }
@@ -204,7 +206,7 @@ public class DeviceConnectActivity extends Activity {
                 public void run() {
                     if (!activity.isDestroyed() && !activity.isFinishing()) {
                         if (device != null && device.getName() != null &&
-                                device.getName().compareTo("")!=0) {
+                                device.getName().compareTo("") != 0) {
                             activity.adapterCustom.add(device);
                         }
                     }
