@@ -86,11 +86,11 @@ public class DeviceConnectActivity extends Activity {
         }   //todo: remove ultimately
         setContentView(R.layout.activity_device_connect);
         adapterCustom = new ListAdapterCustom(this);
-        ((ListView) findViewById(R.id.list)).setAdapter(adapterCustom);
         startScan();
     }
 
     public void rescanClicked(View view) {
+        allow_to_auto_connect = false;
         startScan();
     }
 
@@ -135,6 +135,12 @@ public class DeviceConnectActivity extends Activity {
     }
 
     private void startScan() {
+        ListView list = (ListView) findViewById(R.id.list);
+        if (!allow_to_auto_connect && list.getAdapter() == null) {
+            list.setAdapter(adapterCustom);
+        } else {
+            list.setAdapter(null);
+        }
         show_progressbar();
         Log.e("started scanning", "here");
         if (IS_LOLLIPOP_OR_ABOVE) {
@@ -170,7 +176,8 @@ public class DeviceConnectActivity extends Activity {
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
             BluetoothDevice btDevice = result.getDevice();
-            if (btDevice != null) {
+            if (btDevice != null && btDevice.getName() != null &&
+                    btDevice.getName().compareTo("")!=0) {
                 activity.adapterCustom.add(btDevice);
             }
         }
@@ -196,7 +203,8 @@ public class DeviceConnectActivity extends Activity {
                 @Override
                 public void run() {
                     if (!activity.isDestroyed() && !activity.isFinishing()) {
-                        if (device != null) {
+                        if (device != null && device.getName() != null &&
+                                device.getName().compareTo("")!=0) {
                             activity.adapterCustom.add(device);
                         }
                     }
