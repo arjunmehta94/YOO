@@ -7,6 +7,10 @@ import java.util.List;
 /**
  * Created by rishabhpoddar on 10/08/15.
  */
+
+
+/*IMPORTANT: Do not use WaitableThread is the thread that runs is the same as the thread
+    that's going to call wait_for_threads_to_finish*/
 public class WaitableThreadManager {
     private final List<WeakReference<WaitableThread>> threads = new LinkedList<>();
 
