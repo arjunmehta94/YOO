@@ -12,6 +12,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,8 +35,13 @@ public class DeviceConnectActivity extends Activity {
     private boolean IS_LOLLIPOP_OR_ABOVE = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     private ScanCallbackCustom mScanCallback;
     private BluetoothAdapter.LeScanCallback mLeScanCallback;
-    public WeakReference<StopScanRunnable> stopScanRunnableWeakReference;
-    public WeakReference<Thread> stopScanThreadWeakReference;
+    private WeakReference<StopScanRunnable> stopScanRunnableWeakReference;
+    private WeakReference<Thread> stopScanThreadWeakReference;
+    private String last_device_mac = "";
+
+    //todo: rename to proper package
+    private final String SHARED_PREFERENCE_LAST_DEVICE_KEY = "com.companyname.appname.last_device";
+    private final String SHARED_PREFERENCE_FILE_NAME = "com.companyname.appname";
 
     private int number_of_times_startScan_is_called = 0;    //todo:remove ultimately
 
@@ -130,14 +136,31 @@ public class DeviceConnectActivity extends Activity {
         }
     }
 
+    //should be called only when list item clicked
+    private void save_auto_connect_item(String mac) {
+        SharedPreferences sharedPreferences = this.getSharedPreferences(SHARED_PREFERENCE_FILE_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(SHARED_PREFERENCE_LAST_DEVICE_KEY, mac);
+        editor.commit();
+    }
+
+    private void fill_auto_connect_last_device() {
+        if (last_device_mac.compareTo("") == 0) {
+            SharedPreferences sharedPreferences = this.getSharedPreferences(SHARED_PREFERENCE_FILE_NAME, MODE_PRIVATE);
+            last_device_mac = sharedPreferences.getString(SHARED_PREFERENCE_LAST_DEVICE_KEY, "");
+        }
+    }
+
     private void startScan() {
         ListView list = (ListView) findViewById(R.id.list);
         if (!allow_to_auto_connect) {
             if (list.getAdapter() == null) {
                 list.setAdapter(adapterCustom);
             }
+            last_device_mac = "";
         } else {
             list.setAdapter(null);
+            fill_auto_connect_last_device();
         }
         show_progressbar();
         Log.e("started scanning", "here");
@@ -162,6 +185,12 @@ public class DeviceConnectActivity extends Activity {
 
     }
 
+    private void connect_if_last_device(BluetoothDevice device) {
+        if(device.getAddress().compareTo(last_device_mac)==0) {
+            establishConnection(device);
+        }
+    }
+
     private static class ScanCallbackCustom extends ScanCallback {
 
         DeviceConnectActivity activity;
@@ -177,6 +206,7 @@ public class DeviceConnectActivity extends Activity {
             if (btDevice != null && btDevice.getName() != null &&
                     btDevice.getName().compareTo("") != 0) {
                 activity.adapterCustom.add(btDevice);
+                activity.connect_if_last_device(btDevice);
             }
         }
 
@@ -204,6 +234,7 @@ public class DeviceConnectActivity extends Activity {
                         if (device != null && device.getName() != null &&
                                 device.getName().compareTo("") != 0) {
                             activity.adapterCustom.add(device);
+                            activity.connect_if_last_device(device);
                         }
                     }
                 }
@@ -215,7 +246,7 @@ public class DeviceConnectActivity extends Activity {
         private final Object lock = new Object();
         private DeviceConnectActivity activity;
         private boolean wakeUp;
-        private static final long SCAN_PERIOD = 5000;  //todo: change to 30,000;
+        private static final long SCAN_PERIOD = 30000;
 
         public StopScanRunnable(DeviceConnectActivity activity) {
             this.wakeUp = false;
@@ -275,11 +306,12 @@ public class DeviceConnectActivity extends Activity {
     }
 
     public void listItemClicked(BluetoothDevice device) {
-        //todo: check if device is still in range
+        save_auto_connect_item(device.getAddress());
         establishConnection(device);
     }
 
     public void establishConnection(BluetoothDevice bluetoothDevice) {
+        //todo: check if device is still in range
         Intent intent = new Intent();
         intent.putExtra(DeviceManager.CONNECT_RESULT, true);
         intent.putExtra(DeviceManager.CONNECT_MAC_ADDRESS, bluetoothDevice.getAddress());

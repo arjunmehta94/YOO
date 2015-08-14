@@ -80,7 +80,7 @@ public class DeviceManager {
     public synchronized void establishNewConnection(String mac_address) throws IllegalArgumentException {
         BluetoothDevice bluetoothDevice = mBluetoothAdapter.getRemoteDevice(mac_address);
         gatt = bluetoothDevice.connectGatt(activity, false, new BluetoothGattCallbackCustom(this));
-        connected_to_old_device = this.mac_address.compareTo(mac_address)==0;
+        connected_to_old_device = this.mac_address.compareTo(mac_address) == 0;
         this.mac_address = mac_address;
         setIsConnected(true);
     }
