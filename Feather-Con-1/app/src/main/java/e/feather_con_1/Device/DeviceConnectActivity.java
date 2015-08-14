@@ -3,6 +3,7 @@ package e.feather_con_1.device;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
@@ -29,7 +30,6 @@ public class DeviceConnectActivity extends Activity {
     private boolean allow_to_auto_connect;
     private ListAdapterCustom adapterCustom;
     private BluetoothAdapter mBluetoothAdapter;
-    DeviceManager deviceManager;
     private static final int REQUEST_BLUETOOTH_CODE = 1;
     private boolean IS_LOLLIPOP_OR_ABOVE = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     private ScanCallbackCustom mScanCallback;
@@ -59,13 +59,9 @@ public class DeviceConnectActivity extends Activity {
             finish();
         }
         allow_to_auto_connect = getIntent().getBooleanExtra(ARG_ALLOW_TO_AUTO_CONNECT, true);
-        try {
-            deviceManager = DeviceManager.getInstance(this);
-            mBluetoothAdapter = deviceManager.getBluetoothAdapter();
-        } catch (DeviceManager.BluetoothNotSupportedException e) {
-            e.printStackTrace();
-            return_fail();
-        }
+        final BluetoothManager bluetoothManager =
+                (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = bluetoothManager.getAdapter();
         startConnectProcedure();
     }
 
@@ -283,9 +279,9 @@ public class DeviceConnectActivity extends Activity {
     }
 
     public void establishConnection(BluetoothDevice bluetoothDevice) {
-        deviceManager.imminentConnectDevice(bluetoothDevice);
         Intent intent = new Intent();
-        intent.putExtra(e.feather_con_1.device.DeviceManager.CONNECT_RESULT, true);
+        intent.putExtra(DeviceManager.CONNECT_RESULT, true);
+        intent.putExtra(DeviceManager.CONNECT_MAC_ADDRESS, bluetoothDevice.getAddress());
         this.setResult(Activity.RESULT_OK, intent);
         finish();
     }

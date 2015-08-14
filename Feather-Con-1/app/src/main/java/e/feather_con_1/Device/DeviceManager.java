@@ -32,6 +32,7 @@ public class DeviceManager {
     private static DeviceManager deviceManagerInstance;
     private BluetoothAdapter mBluetoothAdapter;
     public static final String CONNECT_RESULT = "connect_result";
+    public static final String CONNECT_MAC_ADDRESS = "mac_address";
     private boolean isConnected = false;    //todo: when connected, make this true and false otherwise
     private static final String SAVED_INSTANCE_IS_CONNECTED = "is_connected";
     BluetoothDevice bluetoothDevice;
@@ -88,10 +89,6 @@ public class DeviceManager {
 
     public void onRestoreInstanceState(Bundle in) {
         isConnected = in.getBoolean(SAVED_INSTANCE_IS_CONNECTED);
-    }
-
-    public void imminentConnectDevice(BluetoothDevice device) {
-        this.bluetoothDevice = device;
     }
 
     public static final UUID CCCD = UUID
