@@ -63,6 +63,6 @@ public class BluetoothGattCallbackCustom extends BluetoothGattCallback {
     @Override
     public void onCharacteristicChanged(BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
         List<DeviceData> data = DeviceData.getDeviceData(characteristic.getValue());
-        deviceManager.receivedDeviceData(data);
+        deviceManager.dataReceivedFromBluetoothCallback(data);
     }
 }

@@ -7,6 +7,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.List;
+
+import e.feather_con_1.device.DeviceData;
 import e.feather_con_1.device.DeviceListenerInterface;
 import e.feather_con_1.device.DeviceManager;
 
@@ -88,6 +91,13 @@ public class MainActivity extends Activity implements DeviceListenerInterface{
                 Toast.makeText(MainActivity.this, "not connected!!!!!", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void process_device_input(List<DeviceData> dataList) {
+        for(DeviceData data : dataList) {
+            System.out.println(data);
+        }
     }
 
     public void disconnect(View view) {

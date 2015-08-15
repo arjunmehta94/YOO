@@ -28,11 +28,16 @@ public class DeviceManager {
     DeviceListenerInterface deviceListenerInterface;
     private BluetoothGatt gatt;
     private boolean connected_to_old_device = false;
-    private WaitableThreadManager waitableThreadManager;
+    private final MessageBuffer<DeviceData> messageBuffer;
+    ReadQueueRunnable readQueueRunnable;
+    Thread readQueueThread;
 
     private DeviceManager(final Activity activity, DeviceListenerInterface deviceListenerInterface)
             throws BluetoothNotSupportedException {
-        this.waitableThreadManager = new WaitableThreadManager();
+        this.messageBuffer = new MessageBuffer<>();
+        this.readQueueRunnable = new ReadQueueRunnable(messageBuffer, this);
+        readQueueThread = new Thread(readQueueRunnable);
+        readQueueThread.start();
         this.deviceListenerInterface = deviceListenerInterface;
         this.activity = activity;
         final BluetoothManager bluetoothManager =
@@ -62,10 +67,14 @@ public class DeviceManager {
     }
 
     public synchronized void onDestroy() {
-        //todo..
         deviceListenerInterface = null;
+        readQueueRunnable.kill();
+        try {
+            readQueueThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         disconnectDevice();
-        waitableThreadManager.wait_for_threads_to_finish();
         deviceManagerInstance = null;
     }
 
@@ -96,7 +105,7 @@ public class DeviceManager {
 
     public synchronized void disconnectDevice() {
         if (isConnected()) {
-            if(gatt!=null) {
+            if (gatt != null) {
                 gatt.disconnect();
                 gatt = null;
             }
@@ -133,8 +142,16 @@ public class DeviceManager {
         isConnected = bool;
     }
 
-    public void receivedDeviceData(List<DeviceData> dataList) {
-        //todo.
+    public void dataReceivedFromBluetoothCallback(List<DeviceData> dataList) {
+        for (DeviceData data : dataList) {
+            messageBuffer.enQueue(data);
+        }
+    }
+
+    public void dataReadFromReadThread(List<DeviceData> deviceDataList) {
+        if (deviceListenerInterface != null) {
+            deviceListenerInterface.process_device_input(deviceDataList);
+        }
     }
 
 }

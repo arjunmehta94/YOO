@@ -29,12 +29,8 @@ public class MessageBuffer<E> {
         while (!messageQueue.isEmpty()) {
             entryList.add(messageQueue.poll());
         }
-        setIsChangedToFalse();
-        return entryList;
-    }
-
-    public synchronized void setIsChangedToFalse() {
         isChanged = false;
+        return entryList;
     }
 
     public synchronized boolean isChanged() {
