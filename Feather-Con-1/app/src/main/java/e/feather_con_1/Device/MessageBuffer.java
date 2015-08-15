@@ -17,7 +17,6 @@ public class MessageBuffer<E> {
     }
 
     public synchronized void enQueue(E entry) {
-        //Log.e("enQueue","coordinate enqueued");
         if (messageQueue.size() < MAX_ENTRIES) {
             messageQueue.add(entry);
         }
@@ -26,20 +25,19 @@ public class MessageBuffer<E> {
     }
 
     public synchronized List<E> deQueueAll() {
-        //Log.e("deQueueAll","deQueueing");
         List<E> entryList = new LinkedList<E>();
-        System.out.println(messageQueue.size());
-        while(!messageQueue.isEmpty()) {
+        while (!messageQueue.isEmpty()) {
             entryList.add(messageQueue.poll());
         }
+        setIsChangedToFalse();
         return entryList;
     }
 
-    public synchronized void resetIsChanged() {
+    public synchronized void setIsChangedToFalse() {
         isChanged = false;
     }
 
     public synchronized boolean isChanged() {
-        return  isChanged;
+        return isChanged;
     }
 }

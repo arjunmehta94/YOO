@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import java.util.List;
+
 /**
  * Created by arjunmehta94 on 8/12/15.
  */
@@ -26,9 +28,11 @@ public class DeviceManager {
     DeviceListenerInterface deviceListenerInterface;
     private BluetoothGatt gatt;
     private boolean connected_to_old_device = false;
+    private WaitableThreadManager waitableThreadManager;
 
     private DeviceManager(final Activity activity, DeviceListenerInterface deviceListenerInterface)
             throws BluetoothNotSupportedException {
+        this.waitableThreadManager = new WaitableThreadManager();
         this.deviceListenerInterface = deviceListenerInterface;
         this.activity = activity;
         final BluetoothManager bluetoothManager =
@@ -61,6 +65,7 @@ public class DeviceManager {
         //todo..
         deviceListenerInterface = null;
         disconnectDevice();
+        waitableThreadManager.wait_for_threads_to_finish();
         deviceManagerInstance = null;
     }
 
@@ -91,8 +96,10 @@ public class DeviceManager {
 
     public synchronized void disconnectDevice() {
         if (isConnected()) {
-            gatt.disconnect();
-            gatt = null;
+            if(gatt!=null) {
+                gatt.disconnect();
+                gatt = null;
+            }
             this.mac_address = "";
         }
     }
@@ -124,6 +131,10 @@ public class DeviceManager {
 
     private synchronized void setIsConnected(boolean bool) {
         isConnected = bool;
+    }
+
+    public void receivedDeviceData(List<DeviceData> dataList) {
+        //todo.
     }
 
 }

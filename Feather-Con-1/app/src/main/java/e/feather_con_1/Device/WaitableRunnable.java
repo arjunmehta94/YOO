@@ -22,6 +22,7 @@ public abstract class WaitableRunnable implements Runnable, WaitableThread {
         }
     }
 
+    @Override
     public void join_calling_thread() throws InterruptedException {
         synchronized (lock) {
             kill_signal_sent = true;

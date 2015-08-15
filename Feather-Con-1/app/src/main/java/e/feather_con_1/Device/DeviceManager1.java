@@ -391,8 +391,8 @@ public class DeviceManager1 {
 
     public void setDeviceListenerInterface(DeviceListenerInterface deviceListenerInterface) {
         Log.e("DeviceListenerInterface","is set");
-        Thread readQueueThread = new Thread(new ReadQueueThread(messageBuffer, deviceListenerInterface));
-        readQueueThread.start();
+        //Thread readQueueThread = new Thread(new ReadQueueThread(messageBuffer, deviceListenerInterface));
+        //readQueueThread.start();
     }
 
     private final BroadcastReceiver bluetoothReceiver = new BroadcastReceiver() {

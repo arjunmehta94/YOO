@@ -144,11 +144,15 @@ public class DeviceConnectActivity extends Activity {
         editor.commit();
     }
 
-    private void fill_auto_connect_last_device() {
+    private boolean fill_auto_connect_last_device() {
         if (last_device_mac.compareTo("") == 0) {
             SharedPreferences sharedPreferences = this.getSharedPreferences(SHARED_PREFERENCE_FILE_NAME, MODE_PRIVATE);
             last_device_mac = sharedPreferences.getString(SHARED_PREFERENCE_LAST_DEVICE_KEY, "");
+            if(last_device_mac.compareTo("")==0) {
+                return false;
+            }
         }
+        return true;
     }
 
     private void startScan() {
@@ -160,10 +164,13 @@ public class DeviceConnectActivity extends Activity {
             last_device_mac = "";
         } else {
             list.setAdapter(null);
-            fill_auto_connect_last_device();
+            if(!fill_auto_connect_last_device()) {
+                allow_to_auto_connect = false;
+                startScan();
+                return;
+            }
         }
         show_progressbar();
-        Log.e("started scanning", "here");
         if (IS_LOLLIPOP_OR_ABOVE) {
             if (mScanCallback == null) {
                 mScanCallback = new ScanCallbackCustom(this);

@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -61,6 +62,7 @@ public class BluetoothGattCallbackCustom extends BluetoothGattCallback {
 
     @Override
     public void onCharacteristicChanged(BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
-        byte[] val = characteristic.getValue();
+        List<DeviceData> data = DeviceData.getDeviceData(characteristic.getValue());
+        deviceManager.receivedDeviceData(data);
     }
 }

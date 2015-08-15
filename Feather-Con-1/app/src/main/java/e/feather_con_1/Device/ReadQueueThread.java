@@ -1,34 +1,32 @@
 package e.feather_con_1.device;
 
-import android.util.Log;
 
 /**
  * Created by anurag on 10/8/15.
  */
-public class ReadQueueThread implements Runnable{
+public class ReadQueueThread extends WaitableRunnable {
 
-    MessageBuffer messageBuffer;
-    DeviceListenerInterface deviceListenerInterface;
+    final MessageBuffer messageBuffer;
 
-    public ReadQueueThread(MessageBuffer messageBuffer, DeviceListenerInterface deviceListenerInterface) {
+    public ReadQueueThread(MessageBuffer messageBuffer, WaitableThreadManager manager) {
+        super(manager);
         this.messageBuffer = messageBuffer;
-        this.deviceListenerInterface = deviceListenerInterface;
     }
 
     @Override
-    public void run() {
-        Log.e("readQueueThread", "started run");
-        synchronized (messageBuffer) {
-            while(true) {
+    protected void doJob() {
+        while (!kill_signal_sent()) {
+            synchronized (messageBuffer) {
                 while (!messageBuffer.isChanged()) {
                     try {
                         messageBuffer.wait();
-                    } catch (InterruptedException ignored) {}
+                    } catch (InterruptedException ignored) {
+                    }
                 }
-                //Log.e("run","message buffer changed");
+                messageBuffer.deQueueAll();
                 //deviceListenerInterface.handleDeviceInput(messageBuffer.deQueueAll());
-                messageBuffer.resetIsChanged();
             }
         }
     }
+
 }
