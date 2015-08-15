@@ -1,7 +1,7 @@
 #include "ADNS9800.h"
 Serial_* printer2;
 
-ADNS9800::ADNS9800(int mosi, int miso, int sclk, int ncs, Serial_* p) {
+ADNS9800::ADNS9800(int motion, int mosi, int miso, int sclk, int ncs, Serial_* p) {
 	_MOSI = mosi;
 	pinMode(_MOSI,OUTPUT);
 	_MISO = miso;
@@ -10,6 +10,8 @@ ADNS9800::ADNS9800(int mosi, int miso, int sclk, int ncs, Serial_* p) {
 	pinMode(_SCLK,OUTPUT);
 	_NCS = ncs;
 	pinMode(_NCS,OUTPUT);
+	_MOTION = motion;
+	pinMode(_MOTION,INPUT);
 
 	printer2 = p;
 }
@@ -24,12 +26,26 @@ void ADNS9800::checkCommunication() {
 	printer2->println(read(REG_Product_ID));
 }
 
+void ADNS9800::readXY(int8_t data[]) {
+	data[0] = read(REG_Motion);
+	data[1] = read(REG_Delta_X_L);
+	data[2] = read(REG_Delta_X_H);
+	data[3] = read(REG_Delta_Y_L);
+	data[4] = read(REG_Delta_X_H);
+
+	write(REG_Motion, data[0] & 0b01111111);
+}
+
 int8_t ADNS9800::readDeltaX() {
 	return read(REG_Delta_X_L);
 }
 
 int8_t ADNS9800::readDeltaY() {
 	return read(REG_Delta_Y_L);
+}
+
+int8_t ADNS9800::getLiftDetection() {
+	return read(REG_Lift_Detection_Thr);
 }
 
 
@@ -53,6 +69,8 @@ void ADNS9800::powerUp() {
 	// upload the firmware
 	uploadFirmware();
 	delay(10);
+	write(REG_Configuration_I,0xA4);
+	delay(10);
 
 	//enable laser(bit 0 = 0b), in normal mode (bits 3,2,1 = 000b)
 	// reading the actual value of the register is important because the real
@@ -62,6 +80,10 @@ void ADNS9800::powerUp() {
 	write(REG_LASER_CTRL0, laser_ctrl0 & 0xf0 );
 
 	delay(1);
+
+	//set liftdetection higher
+
+	write(REG_Lift_Detection_Thr, 0b00011111);
 
 	printer2->println("ADNS9800 initialized");
 }
@@ -90,7 +112,10 @@ void ADNS9800::uploadFirmware(){
 }
 
 void ADNS9800::sromLoadBurstWrite() {
+
+    digitalWrite(_NCS, LOW);
 	char address = REG_SROM_Load_Burst | 0x80;
+
 
 	for(int address_bit=7; address_bit >=0; address_bit--){
         digitalWrite(_SCLK, LOW);
@@ -115,6 +140,8 @@ void ADNS9800::sromLoadBurstWrite() {
 		}
 		delayMicroseconds(15);
 	}
+
+    digitalWrite(_NCS, HIGH);
 	printer2->println("Loaded firmware");
 }
 

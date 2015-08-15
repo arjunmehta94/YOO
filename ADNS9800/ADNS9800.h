@@ -4,19 +4,23 @@
 
 class ADNS9800 {
 	public:
-	ADNS9800(int,int,int,int,Serial_*);
+	ADNS9800(int,int,int,int,int,Serial_*);
 	void checkLibrary();
 	void powerUp();
 	void uploadFirmware();
 	void checkCommunication();//readProductID
 	int8_t readDeltaX();
 	int8_t readDeltaY();
+	void readXY(int8_t[]);
+	int8_t readMotion();
+	int8_t getLiftDetection();
 
 	private:
 	int _MOSI;
 	int _MISO;
 	int _SCLK;
 	int _NCS;
+	int _MOTION;
 
 	void sromLoadBurstWrite();
 	void write(int8_t,int8_t);
