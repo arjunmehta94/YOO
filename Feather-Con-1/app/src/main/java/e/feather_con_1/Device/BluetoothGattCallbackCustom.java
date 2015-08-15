@@ -60,6 +60,7 @@ public class BluetoothGattCallbackCustom extends BluetoothGattCallback {
     }
 
     @Override
-    public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+    public void onCharacteristicChanged(BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
+        byte[] val = characteristic.getValue();
     }
 }

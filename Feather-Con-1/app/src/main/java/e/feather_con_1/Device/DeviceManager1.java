@@ -55,7 +55,7 @@ public class DeviceManager1 {
 
     private boolean scanning;
 
-    private MessageBuffer<Coordinate> messageBuffer;
+    private MessageBuffer<DeviceData> messageBuffer;
     private boolean firstTime;
     //public static boolean deviceListExists;
 
@@ -126,7 +126,7 @@ public class DeviceManager1 {
                 }
             };
         }
-        messageBuffer = new MessageBuffer<Coordinate>();
+        messageBuffer = new MessageBuffer<DeviceData>();
     }
 
     public boolean bleConnect() {
@@ -384,8 +384,8 @@ public class DeviceManager1 {
             //System.out.println("x: " + val[0]);
             //System.out.println("y: " + val[1]);
             //System.out.println("penupdown: " + val[2]);
-            Coordinate coordinate = new Coordinate(val[0],val[1],val[2]);
-            messageBuffer.enQueue(coordinate);
+            //DeviceData deviceData = new DeviceData(val[0],val[1],val[2]);
+            //messageBuffer.enQueue(deviceData);
         }
     };
 

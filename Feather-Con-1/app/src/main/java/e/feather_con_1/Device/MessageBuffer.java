@@ -25,9 +25,6 @@ public class MessageBuffer<E> {
         this.notifyAll();
     }
 
-
-
-
     public synchronized List<E> deQueueAll() {
         //Log.e("deQueueAll","deQueueing");
         List<E> entryList = new LinkedList<E>();
