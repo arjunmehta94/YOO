@@ -144,31 +144,22 @@ public class DeviceConnectActivity extends Activity {
         editor.commit();
     }
 
-    private boolean fill_auto_connect_last_device() {
+    private void fill_auto_connect_last_device() {
         if (last_device_mac.compareTo("") == 0) {
             SharedPreferences sharedPreferences = this.getSharedPreferences(SHARED_PREFERENCE_FILE_NAME, MODE_PRIVATE);
             last_device_mac = sharedPreferences.getString(SHARED_PREFERENCE_LAST_DEVICE_KEY, "");
-            if(last_device_mac.compareTo("")==0) {
-                return false;
-            }
         }
-        return true;
     }
 
     private void startScan() {
         ListView list = (ListView) findViewById(R.id.list);
+        if (list.getAdapter() == null) {
+            list.setAdapter(adapterCustom);
+        }
         if (!allow_to_auto_connect) {
-            if (list.getAdapter() == null) {
-                list.setAdapter(adapterCustom);
-            }
             last_device_mac = "";
         } else {
-            list.setAdapter(null);
-            if(!fill_auto_connect_last_device()) {
-                allow_to_auto_connect = false;
-                startScan();
-                return;
-            }
+            fill_auto_connect_last_device();
         }
         show_progressbar();
         if (IS_LOLLIPOP_OR_ABOVE) {
@@ -193,7 +184,7 @@ public class DeviceConnectActivity extends Activity {
     }
 
     private void connect_if_last_device(BluetoothDevice device) {
-        if(device.getAddress().compareTo(last_device_mac)==0) {
+        if (device.getAddress().compareTo(last_device_mac) == 0) {
             establishConnection(device);
         }
     }
@@ -317,7 +308,7 @@ public class DeviceConnectActivity extends Activity {
         establishConnection(device);
     }
 
-    public void establishConnection(BluetoothDevice bluetoothDevice) {
+    public synchronized void establishConnection(BluetoothDevice bluetoothDevice) {
         //todo: check if device is still in range
         Intent intent = new Intent();
         intent.putExtra(DeviceManager.CONNECT_RESULT, true);

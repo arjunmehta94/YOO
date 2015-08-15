@@ -123,7 +123,8 @@ public class DeviceManager {
 
     public synchronized void device_connected() {
         if (deviceListenerInterface != null) {
-            deviceListenerInterface.device_connected(connected_to_old_device);
+            deviceListenerInterface.device_connected(connected_to_old_device,
+                    mBluetoothAdapter.getRemoteDevice(mac_address));
         }
     }
 

@@ -1,6 +1,7 @@
 package e.feather_con_1;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -72,12 +73,13 @@ public class MainActivity extends Activity implements DeviceListenerInterface{
     }
 
     @Override
-    public void device_connected(boolean connected_to_old_device) {
+    public void device_connected(boolean connected_to_old_device, BluetoothDevice device) {
+        final String name = device.getName();
         if(!connected_to_old_device) {
             this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(MainActivity.this, "connected!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "connected to " + name, Toast.LENGTH_SHORT).show();
                 }
             });
         }
