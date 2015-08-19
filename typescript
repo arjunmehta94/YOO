@@ -1,0 +1,10 @@
+Script started on Wed Aug 19 12:24:58 2015
+[?1034hbash-3.2$ s
+bash: s: command not found
+bash-3.2$ s = 
+bash: s: command not found
+bash-3.2$ 2s[K[Ks = 2
+bash: s: command not found
+bash-3.2$ exit
+
+Script done on Wed Aug 19 12:25:06 2015

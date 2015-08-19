@@ -63,8 +63,8 @@ void loop() {
         xH = data[2];
         yH = data[4];
 
-        mergedX = xH<<8 | data[1];
-        mergedY = yH<<8 | data[3];
+        mergedX = (xH<<8) | (data[1] & 255);
+        mergedY = (yH<<8) | (data[3] & 255);
         
         //CurrentTime = millis();
         //ElapsedTime = CurrentTime-StartTime;
@@ -77,37 +77,38 @@ void loop() {
         //Serial.print('\t');
         //Serial.print(data[2]);
         //Serial.print('\t');
-        
-        
-        //Serial.print(data[3]);
-        //Serial.print('\t');
-        //Serial.print(data[4]);
-        //Serial.print('\t');
-
-        Serial.print(xH);
-        Serial.print('\t');
-        Serial.print(yH);
-        Serial.print('\t');
-        Serial.print(mergedX);
-        Serial.print('\t');
-        Serial.println(mergedY);
+        //Serial.print(mergedX);
+//        Serial.print('\t');
+//        Serial.print(data[3]);
+//        Serial.print('\t');
+//        Serial.print(data[4]);
+//        Serial.print('\t');
+//        Serial.print(mergedY);
+        //Serial.println();
+//        Serial.print(xH);
+//        Serial.print('\t');
+//        Serial.print(yH);
+//        Serial.print('\t');
+//        Serial.print(mergedX);
+//        Serial.print('\t');
+//        Serial.println(mergedY);
         
         //Serial.println(millis());
         prevXH = data[2];
         prevYH = data[4];
-        if((prevXH>0&&mergedX<0)) {
+//        if((prevXH>0&&mergedX<0)) {
+//          
+//        }
+//        
+//        if((prevXH>0 && mergedX>0)&&(prevYH>0 && mergedY>0)) {
+//            ble.send(data[1], data[2], data[3], data[4], 1);
+//        } else if((prevXH<-1 && mergedX<0)&&(prevYH<-1 && mergedY<0)) {
+//            ble.send(data[1], data[2], data[3], data[4], 1);
+//        } else if((prevXH==0&&prevYH==0)) {
+//            ble.send(data[1], data[2], data[3], data[4], 1);
+//        }
           
-        }
-        
-        if((prevXH>0 && mergedX>0)&&(prevYH>0 && mergedY>0)) {
-            ble.send(data[1], data[2], data[3], data[4], 1);
-        } else if((prevXH<-1 && mergedX<0)&&(prevYH<-1 && mergedY<0)) {
-            ble.send(data[1], data[2], data[3], data[4], 1);
-        } else if((prevXH==0&&prevYH==0) {
-            ble.send(data[1], data[2], data[3], data[4], 1);
-        }
-        
-        
+          ble.send(data[1], data[2], data[3], data[4], 1);
           
 //        a += data[1];
 //        b += data[3];

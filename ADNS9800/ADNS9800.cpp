@@ -31,7 +31,7 @@ void ADNS9800::readXY(int8_t data[]) {
 	data[1] = read(REG_Delta_X_L);
 	data[2] = read(REG_Delta_X_H);
 	data[3] = read(REG_Delta_Y_L);
-	data[4] = read(REG_Delta_Y_H);
+	data[4] = read(REG_Delta_X_H);
 
 	write(REG_Motion, data[0] & 0b01111111);
 }
