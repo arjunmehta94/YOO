@@ -1,6 +1,6 @@
 #define ADNS9800_H
 #include <Arduino.h>
-#include "adns9800_srom_A4.h"
+#include "adns9800_srom_A6.h"
 
 class ADNS9800 {
 	public:
@@ -43,21 +43,21 @@ class ADNS9800 {
 #define REG_Frame_Period_Lower                   0x0d
 #define REG_Frame_Period_Upper                   0x0e
 #define REG_Configuration_I                      0x0f
-#define REG_Configuration_II                     0x0
-#define REG_Frame_Capture                        0x2
-#define REG_SROM_Enable                          0x3
-#define REG_Run_Downshift                        0x4
-#define REG_Rest1_Rate                           0x5
-#define REG_Rest1_Downshift                      0x6
-#define REG_Rest2_Rate                           0x7
-#define REG_Rest2_Downshift                      0x8
-#define REG_Rest3_Rate                           0x9
-#define REG_Frame_Period_Max_Bound_Lower         0xa
-#define REG_Frame_Period_Max_Bound_Upper         0xb
-#define REG_Frame_Period_Min_Bound_Lower         0xc
-#define REG_Frame_Period_Min_Bound_Upper         0xd
-#define REG_Shutter_Max_Bound_Lower              0xe
-#define REG_Shutter_Max_Bound_Upper              0xf
+#define REG_Configuration_II                     0x00
+#define REG_Frame_Capture                        0x02
+#define REG_SROM_Enable                          0x03
+#define REG_Run_Downshift                        0x04
+#define REG_Rest1_Rate                           0x05
+#define REG_Rest1_Downshift                      0x06
+#define REG_Rest2_Rate                           0x07
+#define REG_Rest2_Downshift                      0x08
+#define REG_Rest3_Rate                           0x09
+#define REG_Frame_Period_Max_Bound_Lower         0x0a
+#define REG_Frame_Period_Max_Bound_Upper         0x0b
+#define REG_Frame_Period_Min_Bound_Lower         0x0c
+#define REG_Frame_Period_Min_Bound_Upper         0x0d
+#define REG_Shutter_Max_Bound_Lower              0x0e
+#define REG_Shutter_Max_Bound_Upper              0x0f
 #define REG_LASER_CTRL0                          0x20
 #define REG_Observation                          0x24
 #define REG_Data_Out_Lower                       0x25

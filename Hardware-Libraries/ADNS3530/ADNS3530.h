@@ -3,7 +3,7 @@
 #include <Arduino.h>
 class ADNS3530 {
 	public:
-	ADNS3530(int,int,int,int);
+	ADNS3530(int,int,int,int,HardwareSerial&);
 	void checkLibrary();
 	void powerUp();
 	void resetData();
@@ -13,7 +13,7 @@ class ADNS3530 {
 	int8_t readDeltaX();
 	int8_t readDeltaY();
 	int8_t readSQUAL();
-	void readPixelGrab();
+	bool readPixelGrab();
 	bool checkOverFlow();
 	bool available();
 
@@ -22,6 +22,7 @@ class ADNS3530 {
 	int _MISO;
 	int _SCLK;
 	int _NCS;
+	int _index;
 	void write(int8_t, int8_t);
 	int8_t read(int8_t);
 };

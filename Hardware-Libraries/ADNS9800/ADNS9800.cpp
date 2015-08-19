@@ -27,11 +27,11 @@ void ADNS9800::checkCommunication() {
 }
 
 void ADNS9800::readXY(int8_t data[]) {
-	data[0] = read(REG_Motion);
+	//data[0] = read(REG_Motion);
 	data[1] = read(REG_Delta_X_L);
 	data[2] = read(REG_Delta_X_H);
 	data[3] = read(REG_Delta_Y_L);
-	data[4] = read(REG_Delta_X_H);
+	data[4] = read(REG_Delta_Y_H);
 
 	write(REG_Motion, data[0] & 0b01111111);
 }
@@ -57,6 +57,7 @@ void ADNS9800::powerUp() {
 	digitalWrite(_NCS, HIGH);
 	delayMicroseconds(1);
 
+	//printer2->println(read(REG_));
 	
 	write(REG_Power_Up_Reset, 0x5a); // force reset
 	delay(50); // wait for it to reboot
@@ -69,8 +70,7 @@ void ADNS9800::powerUp() {
 	// upload the firmware
 	uploadFirmware();
 	delay(10);
-	write(REG_Configuration_I,0xA4);
-	delay(10);
+	printer2->println(read(REG_Power_Up_Reset));
 
 	//enable laser(bit 0 = 0b), in normal mode (bits 3,2,1 = 000b)
 	// reading the actual value of the register is important because the real
@@ -86,6 +86,7 @@ void ADNS9800::powerUp() {
 	write(REG_Lift_Detection_Thr, 0b00011111);
 
 	printer2->println("ADNS9800 initialized");
+	write(REG_Configuration_I,0x3a);
 }
 
 void ADNS9800::uploadFirmware(){
@@ -100,9 +101,7 @@ void ADNS9800::uploadFirmware(){
 	delay(10); // assume that the frame rate is as low as 100fps... even if it should never be that low
 
 	// write 0x8 to SROM_enable to start SROM download
-	write(REG_SROM_Enable, 0x18); 
-
-	// write the SROM file (=firmware data) 
+	write(REG_SROM_Enable, 0x18); 	// write the SROM file (=firmware data) 
 
 	//digitalWrite(_NCS, LOW);
 	//SPI.transfer(REG_SROM_Load_Burst | 0x80); // write burst destination adress
@@ -124,6 +123,8 @@ void ADNS9800::sromLoadBurstWrite() {
         else
         	digitalWrite(_MOSI, LOW);
         digitalWrite(_SCLK, HIGH);
+        delayMicroseconds(5);
+
     }
     delayMicroseconds(15);
     char data;
@@ -137,8 +138,9 @@ void ADNS9800::sromLoadBurstWrite() {
 	        else 
 	        	digitalWrite(_MOSI, LOW);
 	        digitalWrite(_SCLK, HIGH);
+	        delayMicroseconds(5);
 		}
-		delayMicroseconds(15);
+		delayMicroseconds(120);
 	}
 
     digitalWrite(_NCS, HIGH);
@@ -186,6 +188,7 @@ void ADNS9800::write(int8_t address, int8_t data) {
         else
         	digitalWrite(_MOSI, LOW);
         digitalWrite(_SCLK, HIGH);
+        delayMicroseconds(5);
     }
     for(int data_bit=7; data_bit >= 0; data_bit--){
         digitalWrite(_SCLK, LOW);
@@ -194,9 +197,10 @@ void ADNS9800::write(int8_t address, int8_t data) {
         else 
         	digitalWrite(_MOSI, LOW);
         digitalWrite(_SCLK, HIGH);
+        delayMicroseconds(5);
 	}
 
-	delayMicroseconds(20);
+	//delayMicroseconds(20);
 	digitalWrite(_NCS, HIGH);
 	delayMicroseconds(120);
 }

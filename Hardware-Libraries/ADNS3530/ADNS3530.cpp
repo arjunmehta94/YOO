@@ -1,6 +1,7 @@
 #include "ADNS3530.h"
+HardwareSerial* printer1;
 
-ADNS3530::ADNS3530(int mosi, int miso, int sclk, int ncs)
+ADNS3530::ADNS3530(int mosi, int miso, int sclk, int ncs, HardwareSerial &p)
 {
 	_MOSI = mosi;
 	pinMode(_MOSI,OUTPUT);
@@ -10,6 +11,11 @@ ADNS3530::ADNS3530(int mosi, int miso, int sclk, int ncs)
 	pinMode(_SCLK,OUTPUT);
 	_NCS = ncs;
 	pinMode(_NCS,OUTPUT);
+
+    _index=0;
+
+    printer1 = &p;
+    printer1->begin(9600);
 }
 
 
@@ -61,17 +67,35 @@ int8_t ADNS3530::readSQUAL() {
 	return read(SQUAL);
 }
 
-void ADNS3530::readPixelGrab() {
+bool ADNS3530::readPixelGrab() {
+    //int pixel_array[484];
 	write(PIXEL_GRAB, 0);
-	int8_t pixel_array[462];
-	for(int i=0; i<462; i++) {
-		if(read(MOTION) & 0b01000000) {
-			pixel_array[i]=read(PIXEL_GRAB);
-		}
-	}
-	if(read(MOTION) & 0b00100000) {//MOTION register's PIXFIRST variable set to HIGH
+	//int8_t pixel_array[462];
+    /*while(!(read(MOTION) & 0b01000000)) {//ready to read
+        printer1->println("waiting");
+    }*/
 
-	}
+    //printer1->println("ready to print");
+    for(int i=0; i<22; i++) {
+        for(int j=0; j<22; j++) {
+            printer1->print(read(PIXEL_GRAB));
+            printer1->print("\t");
+        }
+        printer1->println("");
+        //printer1->print(read(PIXEL_GRAB));
+        //printer1->print("reading");
+        /*while(!read(MOTION) & 0b01000000) {
+            printer1->print("lollllll");
+        }*/
+        //printer1->println("done");
+    }
+    delayMicroseconds(20);
+    if(read(MOTION) & 0b00100000) {//MOTION register's PIXFIRST variable set to HIGH
+        printer1->println("completed!");
+        return true;
+    }
+    printer1->println("done");
+    return false;
 }
 
 int8_t ADNS3530::read(int8_t address) {
