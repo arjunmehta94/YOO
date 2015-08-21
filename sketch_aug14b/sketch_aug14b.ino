@@ -14,6 +14,7 @@ void setup() {
     while(!Serial);
     while(!Serial1);
     pinMode(9,INPUT);
+    pinMode(4,INPUT);
     //ble.checkLibrary();
     adns.powerUp();
     adns.checkCommunication();
@@ -88,11 +89,13 @@ void loop() {
 //        Serial.print(xH);
 //        Serial.print('\t');
 //        Serial.print(yH);
-//        Serial.print('\t');
-//        Serial.print(mergedX);
-//        Serial.print('\t');
-//        Serial.println(mergedY);
-        
+        Serial.print(mergedX);
+        Serial.print('\t');
+        Serial.println(mergedY);
+        Serial.print('\t');
+        boolean a = digitalRead(4);
+        Serial.print(a);
+        Serial.println();
         //Serial.println(millis());
         prevXH = data[2];
         prevYH = data[4];
@@ -108,12 +111,6 @@ void loop() {
 //            ble.send(data[1], data[2], data[3], data[4], 1);
 //        }
           
-          ble.send(data[1], data[2], data[3], data[4], 1);
-          
-//        a += data[1];
-//        b += data[3];
-//        Serial.print(a);
-//        Serial.print("\t");
-//        Serial.println(b);
+          ble.send(data[1], data[2], data[3], data[4]);
     }
 }
