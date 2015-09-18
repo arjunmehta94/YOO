@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.efemel.sketchnet01.JoinCanvasActivity"
-    >
-
-</menu><!-- From: file:/Users/arjunmehta94/Downloads/YOO/SketchNet01-02-2/app/src/main/res/menu/menu_join_canvas.xml -->
