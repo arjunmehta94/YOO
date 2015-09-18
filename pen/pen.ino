@@ -42,13 +42,7 @@ void loop() {
         mergedX = (data[2]<<8) | (data[1] & 255);
         mergedY = (data[4]<<8) | (data[3] & 255);
         if ((data[0] >> 6) == -2  && (mergedX!=0 || mergedY!=0)) {
-          Serial.print(mergedX);
-          Serial.print('\t');
-          Serial.print(mergedY);
-          Serial.print('\n');
-
           ble.send(data[1], data[2], data[3], data[4], 1);
-
        }
     }
 
